@@ -5,18 +5,10 @@ import ScatterEOS from "scatterjs-plugin-eosjs2"
 import { rightsBchainTableLoaded, specialitiesBchainTableLoaded } from '../store/Blockchain/actions'
 import { store } from '../store'
 
-const network = ScatterJS.Network.fromJson({
-   blockchain: 'eos',
-   chainId: '',
-   host: '127.0.0.1',
-   port: 8888,
-   protocol: 'http'
-});
-
 const requiredFields = {
    personal: ['firstname', 'lastname', 'email', 'birthdate'],
    location: ['phone', 'address', 'city', 'state', 'country', 'zipcode'],
-   accounts: [network]
+   accounts: null
 }
 
 const medicalContract = {
@@ -49,8 +41,14 @@ class EOSIOWalletClient {
       this.connect = this.connect.bind(this)
       this.disconnect = this.disconnect.bind(this)
 
-      this.contractAccount = contractAccount;
-      this.rpc = new JsonRpc(network.fullhost())
+      this.contractAccount = contractAccount
+      this.resync_with_new_bchain_node_config()
+   }
+
+   resync_with_new_bchain_node_config = () => {
+      this.network = ScatterJS.Network.fromJson(store.getState().blockchain.config)
+      requiredFields.accounts = [this.network]
+      this.rpc = new JsonRpc(this.network.fullhost())
    }
 
    connect = (onSuc, onErr) => {
@@ -60,8 +58,9 @@ class EOSIOWalletClient {
          "For detailed error open console in your browser"
       this.rpc.get_info()
          .then(info => {
-            network.chainId = info.chain_id
-            ScatterJS.connect(this.contractAccount, { network })
+            this.network.chainId = info.chain_id
+            const _network = this.network
+            ScatterJS.connect(this.contractAccount, { _network })
                .then(connected => {
                   if (!connected)
                      return onErr(msg)
@@ -72,7 +71,7 @@ class EOSIOWalletClient {
                         this.account = this.identity.accounts.find(
                            x => x.blockchain === "eos"
                         )
-                        this.eos = ScatterJS.eos(network, Api, { expireInSeconds: 60, rpc: this.rpc, beta3: true })
+                        this.eos = ScatterJS.eos(this.network, Api, { expireInSeconds: 60, rpc: this.rpc, beta3: true })
                         window.ScatterJS = null
                         onSuc(this.account.name)
                      }).catch(e => {
@@ -119,7 +118,7 @@ class EOSIOWalletClient {
       return await this._table(name, this.contractAccount, limit)
    }
 
-   load_rigths_to_nomenclator = async onErr => {
+   load_rigths_to_nomenclator = async (onSuc, onErr) => {
       try {
          const rights = await eosio_client._rights()
          const rightsMap = new Map()
@@ -127,6 +126,7 @@ class EOSIOWalletClient {
             rightsMap.set(right.key, right.value)
          })
          store.dispatch(rightsBchainTableLoaded(rightsMap))
+         onSuc()
       } catch (e) {
          console.error(e)
          console.error(e)
@@ -145,7 +145,7 @@ class EOSIOWalletClient {
       return await this._table(name, this.contractAccount, limit)
    }
 
-   load_specialities_to_nomenclator = async onErr => {
+   load_specialities_to_nomenclator = async (onSuc, onErr) => {
       try {
          const specialities = await eosio_client._specilities()
          const specialitiesMap = new Map()
@@ -153,6 +153,7 @@ class EOSIOWalletClient {
             specialitiesMap.set(specialty.key, specialty.value)
          })
          store.dispatch(specialitiesBchainTableLoaded(specialitiesMap))
+         onSuc()
       } catch (e) {
          console.error(e)
          console.error(e)
@@ -275,5 +276,5 @@ class EOSIOWalletClient {
 
 export const eosio_client = new EOSIOWalletClient(medicalContract.account)
 
-eosio_client.load_rigths_to_nomenclator(msg => { })
-eosio_client.load_specialities_to_nomenclator(msg => { })
+eosio_client.load_rigths_to_nomenclator(() => { }, msg => { })
+eosio_client.load_specialities_to_nomenclator(() => { }, msg => { })

@@ -7,6 +7,8 @@ import {
    USER_TYPE_MEDIC,
    USER_TYPE_RESEARCHER
 } from '../../store/App/actions'
+import BchainConfigSlide from './BchainConfigSlide';
+import { UsersSlide } from './UsersSlide';
 
 export class StartPage extends React.Component {
 
@@ -26,50 +28,41 @@ export class StartPage extends React.Component {
                newestOnTop={true}
                autoClose={5000}
             />
-            <MDBCarousel activeItem={1} length={3} showControls={true} showIndicators={false} className="z-depth-1">
+            <MDBCarousel interval={300000} activeItem={1} length={4} showControls={true} showIndicators={false} className="z-depth-1">
                <MDBCarouselInner>
                   <MDBCarouselItem itemId="1">
-                     <MDBView>
-                        <img className="full-display"
-                           src="https://images.pexels.com/photos/905874/pexels-photo-905874.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                           alt="Patient slide" />
-                        <MDBMask overlay="black-strong" />
-                     </MDBView>
-                     <MDBCarouselCaption>
-                        <h3 className="h3-responsive">Patient</h3>
-                        <button className="btn btn-success-custom" value={USER_TYPE_PATIENT} onClick={this.onSignIn}>Sign In</button>
-                        <button className="btn btn-primary-custom" value={USER_TYPE_PATIENT} onClick={this.onSignUp}>Sign Up</button>
-                     </MDBCarouselCaption>
+                     <UsersSlide
+                        viewSrc="https://images.pexels.com/photos/905874/pexels-photo-905874.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+                        userTypeDisplay="Patient"
+                        userTypeDispatch={USER_TYPE_PATIENT}
+                        onSignIn={this.onSignIn}
+                        onSignUp={this.onSignUp}
+                     />
                   </MDBCarouselItem>
                   <MDBCarouselItem itemId="2">
-                     <MDBView>
-                        <img className="full-display"
-                           src="https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                           alt="Medic slide" />
-                        <MDBMask overlay="black-strong" />
-                     </MDBView>
-                     <MDBCarouselCaption>
-                        <h3 className="h3-responsive">Medic</h3>
-                        <button className="btn btn-success-custom" value={USER_TYPE_MEDIC} onClick={this.onSignIn}>Sign In</button>
-                        <button className="btn btn-primary-custom" value={USER_TYPE_MEDIC} onClick={this.onSignUp}>Sign Up</button>
-                     </MDBCarouselCaption>
+                     <UsersSlide
+                        viewSrc="https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+                        userTypeDisplay="Medic"
+                        userTypeDispatch={USER_TYPE_MEDIC}
+                        onSignIn={this.onSignIn}
+                        onSignUp={this.onSignUp}
+                     />
                   </MDBCarouselItem>
                   <MDBCarouselItem itemId="3">
-                     <MDBView>
-                        <img className="full-display"
-                           src="http://www.bavarian-nordic.com/media/182897/bn_research3_300dpi.jpg"
-                           alt="Researcher slide" />
-                        <MDBMask overlay="black-strong" />
-                     </MDBView>
-                     <MDBCarouselCaption>
-                        <h3 className="h3-responsive">Researcher</h3>
-                        <button className="btn btn-success-custom" value={USER_TYPE_RESEARCHER} onClick={this.onSignIn}>Sign In</button>
-                        <button className="btn btn-primary-custom" value={USER_TYPE_RESEARCHER} onClick={this.onSignUp}>Sign Up</button>
-                     </MDBCarouselCaption>
+                     <UsersSlide
+                        viewSrc="http://www.bavarian-nordic.com/media/182897/bn_research3_300dpi.jpg"
+                        userTypeDisplay="Researcher"
+                        userTypeDispatch={USER_TYPE_RESEARCHER}
+                        onSignIn={this.onSignIn}
+                        onSignUp={this.onSignUp}
+                     />
+                  </MDBCarouselItem>
+                  <MDBCarouselItem itemId="4">
+                     <BchainConfigSlide />
                   </MDBCarouselItem>
                </MDBCarouselInner>
             </MDBCarousel>
          </React.Fragment>
-      );
+      )
    }
 }

@@ -1,9 +1,12 @@
 import React from "react"
+import { connect } from 'react-redux'
 import { ToastContainer } from 'mdbreact'
 import { Navbar } from './Navigation/NavBar'
-import { BlockchainConfigModal } from "../Utils/BlockchainConfigModal";
+import { BlockchainConfigModal } from "../Utils/BlockchainConfigModal"
+import { bchainNodeEndpointConfigSelected } from '../../store/Blockchain/actions'
+import { eosio_client } from '../../blockchain/eosio-wallet-client'
 
-export class PatientMainPage extends React.Component {
+class PatientMainPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -18,11 +21,15 @@ export class PatientMainPage extends React.Component {
   }
 
   _onBchainNewNodeEndpointSelected = config => {
-    console.log(config)
+    this._bchainTogleModal()
+    this.props.bchainNodeEndpointConfigSelected(config)
+    eosio_client.resync_with_new_bchain_node_config()
+    this.props.onResync()
   }
 
   _onBchainKeepPreviousNode = () => {
-    console.log('prev state')
+    this._bchainTogleModal()
+    this.props.onResync()
   }
 
   render() {
@@ -35,6 +42,7 @@ export class PatientMainPage extends React.Component {
         />
         <BlockchainConfigModal
           isOpen={this.state.bchainModal.isActive}
+          currentConfig={this.props.currentBchainNodeEndpointConfig}
           toggle={this._bchainTogleModal}
           done_hndl={this._onBchainNewNodeEndpointSelected}
           keep_prev_hndl={this._onBchainKeepPreviousNode}
@@ -46,3 +54,15 @@ export class PatientMainPage extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    currentBchainNodeEndpointConfig: state.blockchain.config,
+  }
+}
+
+const mapDispatchToProps = {
+  bchainNodeEndpointConfigSelected
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PatientMainPage)

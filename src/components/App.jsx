@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { PatientMainPage } from './Patient/PatientMainPage'
+import PatientMainPage from './Patient/PatientMainPage'
 import { Registration } from './RegistrationPage/Registration'
 import { StartPage } from './StartPage/StartPage'
 import {
@@ -82,9 +82,9 @@ class App extends React.Component {
     eosio_client.disconnect()
     eosio_client.connect(userName => succToast('Resync successfull for ' + userName), msg => errorToast(msg))
     if (!!!this.props.rightsNomenclatory)
-      eosio_client.load_rigths_to_nomenclator(err_msg => errorToast(err_msg))
+      eosio_client.load_rigths_to_nomenclator(() => succToast('Rights nomenclator loaded'), err_msg => errorToast(err_msg))
     if (!!!this.props.specialitiesNomenclatory)
-      eosio_client.load_specialities_to_nomenclator(err_msg => errorToast(err_msg))
+      eosio_client.load_specialities_to_nomenclator(() => succToast('Specialities nomenclator loaded'), err_msg => errorToast(err_msg))
   }
 
   render() {
