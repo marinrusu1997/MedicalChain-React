@@ -1,0 +1,151 @@
+.btn {
+   margin-left: 10px;
+   margin-right: 10px;
+ }
+
+ .btn-nav-tl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0px
+ }
+
+ .btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+ /* Boostrap Buttons Styling */
+
+ .btn-default-custom {
+   font-size: 13px;
+   color: rgba(108, 88, 179, 0.75);
+   letter-spacing: 1px;
+   line-height: 15px;
+   border: 2px solid rgba(108, 89, 179, 0.75);
+   border-radius: 40px;
+   background: transparent;
+   transition: all 0.3s ease 0s;
+ }
+ 
+ .btn-default-custom:hover {
+   color: #FFF;
+   background: rgba(108, 88, 179, 0.75);
+   border: 2px solid rgba(108, 89, 179, 0.75);
+ }
+
+ 
+ .btn-primary-custom {
+   font-size: 13px;
+   letter-spacing: 1px;
+   line-height: 15px;
+   border: 2px solid rgba(58, 133, 191, 0.75);
+   border-radius: 40px;
+   background: transparent;
+   transition: all 0.3s ease 0s;
+ }
+ 
+ .btn-primary-custom:hover {
+   color: #FFF;
+   background: rgba(58, 133, 191, 0.75);
+   border: 2px solid rgba(58, 133, 191, 0.75);
+ }
+
+ .btn-transparent {
+  background-color: transparent;
+  border-color: #ccc;
+  font-size: 13px;
+  letter-spacing: 1px;
+  line-height: 15px;
+  border-radius: 40px;
+  background: transparent;
+  transition: all 0.3s ease 0s;
+}
+ 
+ .btn-success {
+   font-size: 13px;
+   color: rgba(103, 192, 103, 0.75);
+   letter-spacing: 1px;
+   line-height: 15px;
+   border: 2px solid rgba(103, 192, 103, 0.75);
+   border-radius: 40px;
+   background: transparent;
+   transition: all 0.3s ease 0s;
+ }
+ 
+ .btn-success:hover {
+   color: #FFF;
+   background: rgb(103, 192, 103, 0.75);
+   border: 2px solid rgb(103, 192, 103, 0.75);
+ }
+
+ .btn-success-custom {
+  font-size: 13px;
+  letter-spacing: 1px;
+  line-height: 15px;
+  border: 2px solid rgba(103, 192, 103, 0.75);
+  border-radius: 40px;
+  background: transparent;
+  transition: all 0.3s ease 0s;
+}
+
+.btn-success-custom:hover {
+  color: #FFF;
+  background: rgb(103, 192, 103, 0.75);
+  border: 2px solid rgb(103, 192, 103, 0.75);
+}
+ 
+ .btn-info {
+   font-size: 13px;
+   color: rgba(91, 192, 222, 0.75);
+   letter-spacing: 1px;
+   line-height: 15px;
+   border: 2px solid rgba(91, 192, 222, 0.75);
+   border-radius: 40px;
+   background: transparent;
+   transition: all 0.3s ease 0s;
+ }
+ 
+ .btn-info:hover {
+   color: #FFF;
+   background: rgba(91, 192, 222, 0.75);
+   border: 2px solid rgba(91, 192, 222, 0.75);
+ }
+ 
+ .btn-warning {
+   font-size: 13px;
+   color: rgba(240, 173, 78, 0.75);
+   letter-spacing: 1px;
+   line-height: 15px;
+   border: 2px solid rgba(240, 173, 78, 0.75);
+   border-radius: 40px;
+   background: transparent;
+   transition: all 0.3s ease 0s;
+ }
+ 
+ .btn-warning:hover {
+   color: #FFF;
+   background: rgb(240, 173, 78, 0.75);
+   border: 2px solid rgba(240, 173, 78, 0.75);
+ }
+ 
+ .btn-danger {
+   font-size: 13px;
+   color: rgba(217, 83, 78, 0.75);
+   letter-spacing: 1px;
+   line-height: 15px;
+   border: 2px solid rgba(217, 83, 78, 0.75);
+   border-radius: 40px;
+   background: transparent;
+   transition: all 0.3s ease 0s;
+ }
+ 
+ .btn-danger:hover {
+   color: #FFF;
+   background: rgba(217, 83, 78, 0.75);
+   border: 2px solid rgba(217, 83, 78, 0.75);
+ }
