@@ -1,12 +1,12 @@
 import {
-   NAME_CHANGED,
-   SURNAME_CHANGED,
-   GENDER_CHANGED,
-   SSN_CHANGED,
-   ID_CARD_NUMBER_CHANGED,
-   BIRTHDAY_CHANGED,
-   ACCOUNT_NAME_CHANGED,
-   READ_INSTRUCTIONS_CHANGED,
+   PATIENT_NAME_CHANGED,
+   PATIENT_SURNAME_CHANGED,
+   PATIENT_GENDER_CHANGED,
+   PATIENT_SSN_CHANGED,
+   PATIENT_ID_CARD_NUMBER_CHANGED,
+   PATIENT_BIRTHDAY_CHANGED,
+   PATIENT_ACCOUNT_NAME_CHANGED,
+   PATIENT_READ_INSTRUCTIONS_CHANGED,
    RESET_PATIENT_REGISTRATION_FORM
 } from './actions'
 
@@ -23,42 +23,42 @@ let defaultState = {
 
 export const patientFormReducer = (state = defaultState, action) => {
    switch (action.type) {
-      case NAME_CHANGED:
+      case PATIENT_NAME_CHANGED:
          return {
             ...state,
             name: action.payload
          }
-      case SURNAME_CHANGED:
+      case PATIENT_SURNAME_CHANGED:
          return {
             ...state,
             surname: action.payload
          }
-      case GENDER_CHANGED:
+      case PATIENT_GENDER_CHANGED:
          return {
             ...state,
             gender: action.payload
          }
-      case SSN_CHANGED:
+      case PATIENT_SSN_CHANGED:
          return {
             ...state,
             ssn: action.payload
          }
-      case ID_CARD_NUMBER_CHANGED:
+      case PATIENT_ID_CARD_NUMBER_CHANGED:
          return {
             ...state,
             cardNumber: action.payload
          }
-      case BIRTHDAY_CHANGED:
+      case PATIENT_BIRTHDAY_CHANGED:
          return {
             ...state,
             birthday: action.payload
          }
-      case ACCOUNT_NAME_CHANGED:
+      case PATIENT_ACCOUNT_NAME_CHANGED:
          return {
             ...state,
             accountName: action.payload
          }
-      case READ_INSTRUCTIONS_CHANGED:
+      case PATIENT_READ_INSTRUCTIONS_CHANGED:
          return {
             ...state,
             readInstruction: action.payload

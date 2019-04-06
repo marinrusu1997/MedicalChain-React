@@ -43,7 +43,7 @@ export class Registration extends React.Component {
                            {this.props.userType === USER_TYPE_PATIENT &&
                               <PatientForm />}
                            {this.props.userType === USER_TYPE_MEDIC &&
-                              <MedicForm onSubmit={values => console.log(values)}/>}
+                              <MedicForm onSubmit={values => console.log(values)} />}
                            {this.props.userType === USER_TYPE_RESEARCHER &&
                               <ResearcherForm />}
                         </MDBCol>

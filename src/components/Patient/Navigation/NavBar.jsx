@@ -43,9 +43,6 @@ export class Navbar extends Component {
                   <MDBNavItem active={this.state.activeLinks.permissions} onClick={this.setPermissionsActive}>
                      <MDBNavLink to={routes.patient.permissions}>Permissions</MDBNavLink>
                   </MDBNavItem>
-                  <MDBNavItem>
-                     <MDBNavLink to="#!">Pricing</MDBNavLink>
-                  </MDBNavItem>
                   <MDBNavItem active={this.state.activeLinks.permissions}>
                      <MDBDropdown>
                         <MDBDropdownToggle nav caret>

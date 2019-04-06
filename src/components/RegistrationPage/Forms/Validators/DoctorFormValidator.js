@@ -32,18 +32,6 @@ const isSurnameValid = surname => {
    return true
 }
 
-const isGenderValid = gender => {
-   if (gender.length === 0) {
-      errorToast('Type the gender')
-      return false
-   }
-   if (gender.charAt(0) !== 'M' && gender.charAt(0) !== 'F') {
-      errorToast('Gender must be M or F')
-      return false
-   }
-   return true
-}
-
 const doSsnValidation = ssn => {
    let i = 0, year = 0, hashResult = 0, cnp = [], hashTable = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9];
    if (ssn.length !== 13) { return false; }
@@ -74,28 +62,41 @@ const isSsnValid = ssn => {
    return res
 }
 
-const isIDCardNumberValid = cardNumber => {
-   if (cardNumber.length <= 2) {
-      errorToast('Card Number must contain at least 3 characters')
+const isUniqueIdentificationCodeValid = code => {
+   if (code.length !== 10) {
+      errorToast('Unique Identification Code must contain exactly 10 digits')
       return false
    }
    return true
 }
 
-const isBirthdayValid = birthday => {
-   if (isNaN(Date.parse(birthday))) {
-      errorToast('Birthday is invalid')
+const isDiplomaSeriesValid = series => {
+   const tokens = series.split(" ")
+   if (tokens.length != 2) {
+      errorToast('Invalid Diploma Series. Please follow tooltip indications')
+      return false
+   }
+   if (!!!/^\d+$/.test(tokens[1])) {
+      errorToast('Invalid Diploma Series. Serial number must contain only digits')
       return false
    }
    return true
 }
 
-const isEmailValid = email => {
-   return /\S+@\S+\.\S+/.test(email)
+const isSpecialistPhysicianCertificateSeriesValid = series => {
+   const tokens = series.split(" ")
+   if (tokens.length != 2) {
+      errorToast('Invalid Specialist Physician Certificate Series. Please follow tooltip indications')
+      return false
+   }
+   if (!!!/^\d+$/.test(tokens[1])) {
+      errorToast('Invalid Specialist Physician Certificate Series. Serial number must contain only digits')
+      return false
+   }
+   return true
 }
 
-const isAccountNameValid = accountName => {
-   let account = accountName
+const isAccountNameValid = account => {
    if (account.length !== 12) {
       errorToast('Account Name must be 12 characters')
       return false
@@ -111,9 +112,13 @@ const isAccountNameValid = accountName => {
    return true
 }
 
-export const isPatientFormValid = form => {
-   return isSurnameValid(form.surname) && isNameValid(form.name) &&
-      isGenderValid(form.gender) && isSsnValid(form.ssn) &&
-      isIDCardNumberValid(form.cardNumber) && isBirthdayValid(form.birthday) &&
-      isAccountNameValid(form.accountName) && form.readInstruction
-}
+export const isDoctorFormValid = form => (
+   isSurnameValid(form.surname) &&
+   isNameValid(form.name) &&
+   isSsnValid(form.ssn) &&
+   isUniqueIdentificationCodeValid(form.unique_identification_code) &&
+   isDiplomaSeriesValid(form.diploma_series) &&
+   isSpecialistPhysicianCertificateSeriesValid(form.specialist_physician_certificate_series) &&
+   isAccountNameValid(form.account_name) &&
+   form.readInstruction
+)

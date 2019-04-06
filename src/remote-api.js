@@ -1,7 +1,11 @@
 export const validationService = {
    baseUrl: 'http://localhost:8080',
-   validateIdentity:  {
+   validatePatientIdentity: {
       method: 'post',
-      api: '/validate-identity'
+      api: '/patient/validate-identity'
+   },
+   validateDoctorIdentity: {
+      method: 'post',
+      api: '/doctor/validate-identity'
    }
 }

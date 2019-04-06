@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { MDBInput, MDBTooltip } from 'mdbreact'
 import RegistrationButton from '../RegistrationButton'
+import { ReadInstrutionsCBox } from './ReadInstructionCBox'
 import {
    setPatientName,
    setPatientSurname,
@@ -21,39 +22,39 @@ class PatientForm extends React.Component {
    }
 
    changeHandler = event => {
-      switch(event.target.name) {
+      switch (event.target.name) {
          case 'name': {
             this.props.setPatientName(event.target.value)
          }
-         break;
-         case 'surname':{
+            break;
+         case 'surname': {
             this.props.setPatientSurname(event.target.value)
          }
-         break;
-         case 'gender':{
+            break;
+         case 'gender': {
             this.props.setPatientGender(event.target.value)
          }
-         break;
+            break;
          case 'ssn': {
             this.props.setPatientSSN(event.target.value)
          }
-         break;
+            break;
          case 'cardNumber': {
             this.props.setPatientIdCardNumber(event.target.value)
          }
-         break;
+            break;
          case 'birthday': {
             this.props.setPatientBirthday(event.target.value)
          }
-         break;
+            break;
          case 'accountName': {
             this.props.setPatientAccountName(event.target.value)
          }
-         break;
+            break;
          case 'readInstruction': {
             this.props.setReadedInstructions(event.target.checked)
          }
-         break;
+            break;
       }
    }
 
@@ -74,7 +75,6 @@ class PatientForm extends React.Component {
                   type="text"
                />
                <MDBInput
-                  id='fullNameRegistrationInput'
                   value={this.props.name}
                   name='name'
                   onChange={this.changeHandler}
@@ -100,7 +100,7 @@ class PatientForm extends React.Component {
                </MDBTooltip>
                <MDBTooltip
                   placement="bottom"
-                  tooltipContent="Must contain exactly 13 numbers">
+                  tooltipContent="Must contain exactly 13 digits">
                   <MDBInput
                      value={this.props.ssn}
                      name='ssn'
@@ -109,7 +109,7 @@ class PatientForm extends React.Component {
                      className="white-text"
                      label="Your SSN"
                      icon="id-badge"
-                     type="text"
+                     type="number"
                   />
                </MDBTooltip>
                <MDBInput
@@ -142,22 +142,10 @@ class PatientForm extends React.Component {
                   icon="user-circle"
                   type="text"
                />
-               <div className="custom-control custom-checkbox pl-3">
-                  <input
-                     name='readInstruction'
-                     onChange={this.changeHandler}
-                     required
-                     className="custom-control-input"
-                     type="checkbox"
-                     id="instruction"
-                  />
-                  <label className="custom-control-label" htmlFor="instruction">
-                     I read the instruction for registration
-                  </label>
-                  <div className="invalid-feedback">
-                     You must read the instruction before registering.
-                  </div>
-               </div>
+               <ReadInstrutionsCBox
+                  input_name="readInstruction"
+                  changeHandler={this.changeHandler}
+               />
             </div>
             <RegistrationButton />
          </form>

@@ -64,19 +64,24 @@ class AccountModal extends React.Component {
                         <MDBIcon icon="key" /><font color="blue">&nbsp;&nbsp;Active Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
                         <font color="black">{this.props.accountDetails.keys.active}</font>
                      </MDBListGroupItem>
-                     <MDBListGroupItem>
-                        <MDBIcon icon="key" />
-                        <font color="blue">&nbsp;&nbsp;Encryption Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
-                        <CopyToClipboard text={this.props.accountDetails.keys.encryption}>
-                           <button type="button" className="btn btn-outline-danger btn-sm">Copy</button>
-                        </CopyToClipboard>      
-                     </MDBListGroupItem>
+                     {
+                        this.props.accountDetails.keys.encryption &&
+                        <MDBListGroupItem>
+                           <MDBIcon icon="key" />
+                           <font color="blue">&nbsp;&nbsp;Encryption Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                           <CopyToClipboard text={this.props.accountDetails.keys.encryption}>
+                              <button type="button" className="btn btn-outline-danger btn-sm">Copy</button>
+                           </CopyToClipboard>
+                        </MDBListGroupItem>
+                     }
                   </MDBListGroup>
                   <p></p>
-                  <p>
-                     <font color="#006400">Transaction details</font>
-                     <button onClick={this.collapse} type="button" className="btn btn-outline-info btn-sm"><MDBIcon icon="angle-down" /></button>
-                  </p>
+                  <center>
+                     <p>
+                        <font color="#006400">Transaction details</font>
+                        <button onClick={this.collapse} type="button" className="btn btn-outline-info btn-sm"><MDBIcon icon="angle-down" /></button>
+                     </p>
+                  </center>
                   <MDBCollapse isOpen={this.state.isCollapsed}>
                      <MDBListGroup>
                         <MDBListGroupItem>
