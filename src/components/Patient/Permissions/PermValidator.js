@@ -29,7 +29,7 @@ const hasRequiredFields = perm => {
 const validateStartTime = perm => {
    const currentTime = (new Date().getTime() / 1000).toFixed(0)
    const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
-   if ((startTime - 60) < currentTime) {
+   if ((startTime - 60) <= currentTime) {
       errorToast('Start time must be at least 1 min greather than current time')
       return false
    }
@@ -39,8 +39,8 @@ const validateStartTime = perm => {
 const validateEndTime = perm => {
    const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
    const stopTime = (Date.parse(perm.stop) / 1000).toFixed(0)
-   if (stopTime - 3600 < startTime) {
-      errorToast('End time must be at least 1 h greather than start time')
+   if (stopTime - 60 <= startTime) {
+      errorToast('End time must be at least 1 min greather than start time')
       return false
    }
    return true
@@ -78,12 +78,44 @@ const validateRight = right => {
    return true
 }
 
-export const validate = perm => {
+export const validateForAdding = perm => {
    if (!!!hasRequiredFields(perm))
       return false
    if (!!!validateDoctor(perm.doctor))
       return false
    if (!!!validateSpecialty(perm.specialty))
+      return false
+   if (!!!validateRight(perm.right))
+      return false
+   if (perm.interval === "LIMITED") {
+      if (!!!validateStartTime(perm))
+         return false
+      if (!!!validateEndTime(perm))
+         return false
+   }
+   return true
+}
+
+const preliminaryValidationsForUpdating = perm => {
+   if (!!!perm.right) {
+      errorToast('Select right from dropdown')
+      return false
+   }
+   if (perm.interval === "LIMITED") {
+      if (!!!perm.start || perm.start.length === 0) {
+         errorToast('Start date is mandatory')
+         return false
+      }
+      if (!!!perm.stop || perm.stop.length === 0) {
+         errorToast('End date is mandatory')
+         return false
+      }
+   }
+   return true
+}
+
+export const validateForUpdating = perm => {
+   if (!!!preliminaryValidationsForUpdating(perm))
       return false
    if (!!!validateRight(perm.right))
       return false

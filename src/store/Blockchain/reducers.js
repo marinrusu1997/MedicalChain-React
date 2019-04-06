@@ -14,7 +14,7 @@ const defaultState = {
       blockchain: 'eos',
       chainId: '',
       host: '127.0.0.1',
-      port: 8989,
+      port: 8888,
       protocol: 'http'
    }
 }

@@ -59,8 +59,8 @@ export const tryCreateAccount = async (registrationInfo, userType, registrCb) =>
       registrCb({
          isSuccessfull: false,
          msg: e.response
-            ? e.response.data.message
-            : 'Internet connexion error'
+            ? e.response.data.message ? e.response.data.message : 'Failed to connect to identification service'
+            : 'Internet connection error'
       })
    }
 }

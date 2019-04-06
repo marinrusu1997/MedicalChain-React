@@ -5,10 +5,10 @@ import {
    MDBModalBody,
    MDBIcon
 } from 'mdbreact'
-import { AddPermForm } from './AddPermForm';
-import { UpdatePermForm } from './UpdatePermForm';
-import { validate } from './PermValidator';
-import { TransactionReceipt } from '../../Modals/TransactionReceipt';
+import { AddPermForm } from './AddPermForm'
+import { UpdatePermForm } from './UpdatePermForm'
+import { validateForAdding, validateForUpdating } from './PermValidator'
+import { TransactionReceipt } from '../../Modals/TransactionReceipt'
 
 export class PermissionModal extends React.Component {
    constructor(props) {
@@ -22,18 +22,45 @@ export class PermissionModal extends React.Component {
       }
    }
 
+   componentDidUpdate() {
+      if (this.props.isAddingModal === false) {
+         this.permFromForm = {
+            interval: this.props.permInfoForModify.interval,
+            start: this.props.permInfoForModify.start_time,
+            stop: this.props.permInfoForModify.end_time,
+            right: this.props.permInfoForModify.right
+         }
+      }
+   }
+
+   __resetPermFromForm = () => {
+      this.permFromForm = {
+         interval: 'LIMITED'
+      }
+   }
+
    _getNormalizedPerm = () => ({
       doctor: this.permFromForm.doctor,
-      specialtyid: this.props.permission.specialitiesNomenclatory.get(this.permFromForm.specialty),
-      rightid: this.props.permission.rightsNomenclatory.get(this.permFromForm.right),
+      specialtyid: this.props.permNomenclatories.specialitiesNomenclatory.get(this.permFromForm.specialty),
+      rightid: this.props.permNomenclatories.rightsNomenclatory.get(this.permFromForm.right),
+      from: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.start) / 1000).toFixed(0) : 0,
+      to: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.stop) / 1000).toFixed(0) : 0
+   })
+
+   _getNormalizedUpdatedPerm = () => ({
+      rightid: this.props.permNomenclatories.rightsNomenclatory.get(this.permFromForm.right),
       from: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.start) / 1000).toFixed(0) : 0,
       to: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.stop) / 1000).toFixed(0) : 0
    })
 
    handleUpsert = () => {
-      if (!!!validate(this.permFromForm))
-         return
-      this.props.onUpsert(this._getNormalizedPerm())
+      if (!!!this.props.isAddingModal) {
+         if (validateForUpdating(this.permFromForm)) {
+            this.props.onUpsert(this._getNormalizedUpdatedPerm())
+         }
+      } else if (validateForAdding(this.permFromForm)) {
+         this.props.onUpsert(this._getNormalizedPerm())
+      }
    }
 
    handleInputChange = event => {
@@ -54,6 +81,7 @@ export class PermissionModal extends React.Component {
    handleTogle = () => {
       this.setState({ modalSize: "nm", isTrInfoVisible: false })
       this.props.toggle()
+      this.__resetPermFromForm()
    }
 
    render() {
@@ -73,21 +101,22 @@ export class PermissionModal extends React.Component {
                   </em>}
             </MDBModalHeader>
             <MDBModalBody>
+               {this.props.header_msg}
                {this.props.isAddingModal &&
-                  <AddPermForm perm={this.props.permission} onInputChange={this.handleInputChange} >
+                  <AddPermForm permNomenclatories={this.props.permNomenclatories} onInputChange={this.handleInputChange} >
                      <div className="text-center">
                         <button className="btn btn-info" onClick={this.handleUpsert}>
                            Add
-                     </button>
+                        </button>
                      </div>
                   </AddPermForm>
                }
                {!!!this.props.isAddingModal &&
-                  <UpdatePermForm perm={this.props.permission} onInputChange={this.handleInputChange} >
+                  <UpdatePermForm permNomenclatories={this.props.permNomenclatories} permInfo={this.props.permInfoForModify} onInputChange={this.handleInputChange} >
                      <div className="text-center">
                         <button className="btn btn-info" onClick={this.handleUpsert}>
                            Update
-                     </button>
+                        </button>
                      </div>
                   </UpdatePermForm>
                }

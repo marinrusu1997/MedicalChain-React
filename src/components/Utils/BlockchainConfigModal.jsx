@@ -63,7 +63,7 @@ export class BlockchainConfigModal extends React.Component {
                <MDBModalBody>
                   <MDBCard>
                      <MDBCardBody>
-                        <center><h4><strong><font color="red"><p>Make sure you have new config inside your scatter wallet</p></font></strong></h4></center>
+                        <center><h4><b><font color="red"><p>Make sure you have this new config inside your scatter wallet</p></font></b></h4></center>
                         <BchainConfigForm onInputChange={this.onBchainConfigInputChange} config={this.state} />
                      </MDBCardBody>
                   </MDBCard>

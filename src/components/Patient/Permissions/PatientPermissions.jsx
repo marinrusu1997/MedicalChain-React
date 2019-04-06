@@ -57,31 +57,11 @@ const table_mapping = {
    ],
    rows: []
 }
-/*
-const cachedPermissions = {
-   isDirty: false,
-   perms: [],
-}
 
-const setCachedPermissions = perms => {
-   cachedPermissions.isDirty = false
-   cachedPermissions.perms = perms
-}
-
-const resetCachedPermissions = () => {
-   cachedPermissions.isDirty = false
-   cachedPermissions.perms = []
-}
-
-const addPermToCachedPermissions = perm => {
-   cachedPermissions.perms.push(perm)
-}
-
-const areChachedPermissionsValid = () => cachedPermissions.perms.length !== 0 && !!!cachedPermissions.isDirty
-
-const getCachedPermissions = () => cachedPermissions.perms
-
-*/
+const messageWhenNoSelections = "You don't have any selected permissions. Please select at least one by toggling the button from the Change column"
+const messageWhenTooManySelections = 'Due to the long delay of signing transaction with scatter wallet, we recommend you to select only 1 permission for further changes.' +
+   ' Multiple selection will be allowed in the near future'
+const messageWhenSelectionNotFound = "Selected permission wasn't found. Please reload the page and try again"
 
 class _PatientPermissions extends React.Component {
    constructor(props) {
@@ -103,10 +83,13 @@ class _PatientPermissions extends React.Component {
          tr_receipt: null,
          table: table_mapping
       }
-      this.permInfoForModal = null
+
+      this.permInfoForModify = null
+      this.permNomenclatoriesForModal = null
       this.onUpsertHandler = null
       this.reversedRightsNomenclatory = null
       this.reversedSpecialitiesNomenclatory = null
+      this.perm_modal_header_msg = null
       this.toggleMap = new Map()
       this.permIdsCheduledForChanging = []
    }
@@ -160,7 +143,6 @@ class _PatientPermissions extends React.Component {
       }
 
       this._updateRowsScheduledForChanging(newActiveState, id_perm_of_doctor)
-      //setCachedPermissions(modifiedRows)
       this.setState({ table: { columns: table_mapping.columns, rows: modifiedRows } })
    }
 
@@ -232,7 +214,6 @@ class _PatientPermissions extends React.Component {
          const permRow = this.__makePermRow(latest_perm, doctor)
 
          this.setState({ table: { columns: table_mapping.columns, rows: [...this.state.table.rows, permRow] } })
-         //addPermToCachedPermissions(permRow)
       } catch (e) {
          console.error(e)
          errorToast('Error retrieving perms from blockchain' + ' : ' + e.message)
@@ -244,12 +225,10 @@ class _PatientPermissions extends React.Component {
          const _records = await eosio_client.records()
          if (!!!_records.rows.length) {
             errorToast("Seems that you are not registered yet")
-            //resetCachedPermissions()
             return
          }
          if (!!!_records.rows[0].perms.length) {
-            errorToast("You don't have any permissions")
-            //resetCachedPermissions()
+            infoToast("You don't have any permissions")
             return
          }
          const noOfPerms = _records.rows[0].perms.reduce((accumulator, current) => accumulator + current.value.length, 0)
@@ -257,8 +236,6 @@ class _PatientPermissions extends React.Component {
          if (_perms.more) {
             errorToast('Some permissions have remained unloaded from the blockchain')
          }
-         //setCachedPermissions(this.__getNormalizedPerms(_records.rows[0].perms, _perms.rows))
-         //this.setState({ table: { columns: table_mapping.columns, rows: getCachedPermissions() } })
          this.setState({ table: { columns: table_mapping.columns, rows: this.__getNormalizedPerms(_records.rows[0].perms, _perms.rows) } })
       } catch (e) {
          console.error(e)
@@ -266,27 +243,8 @@ class _PatientPermissions extends React.Component {
       }
    }
 
-   /*  __getNormalizedPermRowsFromCache = rows => {
-        for (const row of rows) {
-           this.toggleMap.set(row.change.props.id, false)
-           row.change = this.__makeTogleForChangeScheduling(row.change.props.id, false)
-        }
-        setCachedPermissions(rows)
-        return rows
-     } */
-
    _getPermsDatasetAsync = () => {
       try {
-         /*  if (areChachedPermissionsValid()) {
-              console.log('from cache')
-              this.setState({
-                 table: {
-                    columns: table_mapping.columns,
-                    rows: this.__getNormalizedPermRowsFromCache(getCachedPermissions())
-                 }
-              })
-              return
-           } */
          if (!!!eosio_client.is_connected()) {
             eosio_client.connect(this._requestPermsFromBlockchain, msg => errorToast(msg))
          } else {
@@ -313,12 +271,12 @@ class _PatientPermissions extends React.Component {
       }
    }
 
-   _tryPreparePermInfoForAddingForm = () => {
+   _tryPreparePermInfoForUpsertForm = () => {
       try {
          if (!!!this.props.rightsNomenclatory || !!!this.props.specialitiesNomenclatory)
             throw new Error("Can't load nomenclatures")
          this.__checkForReversedNomenclatories()
-         this.permInfoForModal = {
+         this.permNomenclatoriesForModal = {
             rightsNomenclatory: this.reversedRightsNomenclatory,
             specialitiesNomenclatory: this.reversedSpecialitiesNomenclatory
          }
@@ -326,13 +284,6 @@ class _PatientPermissions extends React.Component {
       } catch (e) {
          errorToast(e.name + ': ' + e.message)
          return false
-      }
-   }
-
-   addPermHandler = () => {
-      if (this._tryPreparePermInfoForAddingForm()) {
-         this.onUpsertHandler = this._preparedAddHandlerForModal
-         this._showPermModal(true)
       }
    }
 
@@ -360,8 +311,106 @@ class _PatientPermissions extends React.Component {
          )
    }
 
-   updatePermHandler = async () => {
-      this._showPermModal(false)
+   addPermHandler = () => {
+      if (this._tryPreparePermInfoForUpsertForm()) {
+         this.onUpsertHandler = this._preparedAddHandlerForModal
+         this._showPermModal(true)
+      }
+   }
+
+   _tryGetPermisionRowForUpdating = () => {
+      if (this.permIdsCheduledForChanging.length == 0) {
+         infoToast(messageWhenNoSelections)
+         return null
+      }
+      if (this.permIdsCheduledForChanging.length > 1) {
+         infoToast(messageWhenTooManySelections)
+         return null
+      }
+      const row = this.state.table.rows.find(row => row.change.props.id === this.permIdsCheduledForChanging[0].id)
+      if (!row) {
+         errorToast(messageWhenSelectionNotFound)
+         return null
+      }
+      return row
+   }
+
+   __getUpdateMsgFromPermRow = row => (
+      <React.Fragment>
+         <center>
+            <b>
+               You are updating the permission with id <mark>{row.change.props.id}</mark>
+               within <mark>{row.specialty}</mark> specialty
+               which belongs to doctor account <mark>{row.account}</mark>
+            </b>
+         </center>
+         <p />
+      </React.Fragment>
+   )
+
+   __extractPermInfoForUpdatingFromRow = row => {
+      return {
+         interval: row.end_time === 'INFINITE' ? 'INFINITE' : 'LIMITED',
+         start_time: row.start_time,
+         end_time: row.end_time,
+         right: row.right
+      }
+   }
+
+   __extractPermInfoForUnmodifiedPartFromRow = row => {
+      return {
+         doctor: row.account,
+         permid: row.change.props.id
+      }
+   }
+
+   _onUpdatePermSuccess = permInfo => receipt => {
+      this.setState({
+         tr_receipt: {
+            id: receipt.transaction_id,
+            status: receipt.processed.receipt.status,
+            cpu_usage_us: receipt.processed.receipt.cpu_usage_us,
+            net_usage_words: receipt.processed.receipt.net_usage_words,
+            block_num: receipt.processed.block_num,
+            block_time: receipt.processed.block_time
+         },
+         table: {
+            columns: table_mapping.columns,
+            rows: this.state.table.rows.map(row =>
+               row.change.props.id !== permInfo.permid
+                  ? row
+                  : {
+                     ...row,
+                     right: this.props.rightsNomenclatory.get(permInfo.rightid),
+                     start_time: permInfo.from === 0 ? 'INFINITE' : this.__getNormalizedDateTime(permInfo.from),
+                     end_time: permInfo.to === 0 ? 'INFINITE' : this.__getNormalizedDateTime(permInfo.to)
+                  }
+            )
+         }
+      })
+      succToast(`Permission with id ${permInfo.permid} updated successfully`)
+   }
+
+   _preparedUpdateHandlerForModal = unmodified => modified => {
+      const permInfo = { ...unmodified, ...modified }
+      eosio_client.updt_permission
+         (
+            permInfo,
+            this._onUpdatePermSuccess(permInfo),
+            err_msg => errorToast(err_msg)
+         )
+   }
+
+   updatePermHandler = () => {
+      if (this._tryPreparePermInfoForUpsertForm()) {
+         const row = this._tryGetPermisionRowForUpdating()
+         if (row) {
+            this.perm_modal_header_msg = this.__getUpdateMsgFromPermRow(row)
+            this.permInfoForModify = this.__extractPermInfoForUpdatingFromRow(row)
+            this.onUpsertHandler = this._preparedUpdateHandlerForModal(this.__extractPermInfoForUnmodifiedPartFromRow(row))
+            this._showPermModal(false)
+         }
+      }
    }
 
    __onSuccessfullDeletion = id_perm_of_doctor => receipt => {
@@ -428,8 +477,7 @@ class _PatientPermissions extends React.Component {
             }
          })
       } else {
-         infoToast('Due to the long delay of signing transaction with scatter wallet, we recommend you to select only 1 permission for further changes.' +
-            ' Multiple selection will be allowed in the near future')
+         infoToast(messageWhenTooManySelections)
       }
    }
 
@@ -442,7 +490,9 @@ class _PatientPermissions extends React.Component {
                isOpen={this.state.perm_modal.isOpen}
                isAddingModal={this.state.perm_modal.isAddingModal}
                toggle={this._toglePermModal}
-               permission={this.permInfoForModal}
+               permNomenclatories={this.permNomenclatoriesForModal}
+               permInfoForModify={this.permInfoForModify}
+               header_msg={this.perm_modal_header_msg}
                onUpsert={this.onUpsertHandler}
                tr_receipt={this.state.tr_receipt}
             />

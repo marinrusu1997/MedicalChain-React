@@ -15,6 +15,7 @@ const medicalContract = {
    account: 'medical4',
    actions: {
       addperm: 'addperm',
+      updtperm: 'updtperm',
       rmperm: 'rmperm'
    },
    tables: {
@@ -230,6 +231,36 @@ class EOSIOWalletClient {
                doctor: perm.doctor
             },
             specialtyid: perm.specialtyid,
+            rightid: perm.rightid,
+            interval: {
+               from: perm.from,
+               to: perm.to
+            }
+         }))
+      } catch (e) {
+         console.error(e)
+         if (e instanceof RpcError) {
+            onErr(getErrMsgFromRpcErr(e))
+         } else if (e.message) {
+            onErr(e.message)
+         } else {
+            onErr('Failed to push transaction')
+         }
+      }
+   }
+
+   updt_permission = async (perm, onSucc, onErr) => {
+      try {
+         if (!!!this.account) {
+            onErr('Failed push transaction : Not connected to wallet')
+            return
+         }
+         onSucc(await this._transaction(medicalContract.actions.updtperm, {
+            perm: {
+               patient: this.account.name,
+               doctor: perm.doctor
+            },
+            permid: perm.permid,
             rightid: perm.rightid,
             interval: {
                from: perm.from,
