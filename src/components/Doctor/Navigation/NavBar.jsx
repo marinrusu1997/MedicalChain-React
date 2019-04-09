@@ -1,13 +1,14 @@
-import React, { Component } from "react"
+import React from 'react'
 import {
    MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBDropdown,
    MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem
 } from 'mdbreact'
-import SideNav from './SideNav'
-import AccountDropDown from "../../Navigation-Commons/AccountDropDown"
-import { routes } from '../../../routes'
 
-export class Navbar extends Component {
+import { routes } from '../../../routes'
+import AccountDropDown from "../../Navigation-Commons/AccountDropDown"
+
+export class NavBar extends React.Component {
+
    constructor(props) {
       super(props)
       this.state = {
@@ -30,29 +31,17 @@ export class Navbar extends Component {
    render() {
       return (
          <MDBNavbar className="text-center gradient-card-header aqua-gradient darken-2 white-text" dark expand="md" scrolling>
-            <SideNav />
             <MDBNavbarBrand href={routes.app} onClick={this.resetActiveLinks}>
                <strong className="white-text">Medical Chain</strong>
             </MDBNavbarBrand>
             <MDBNavbarToggler onClick={this.toggleCollapse} />
-            <MDBCollapse id="navbarCollapsePatient" isOpen={this.state.isOpen} navbar>
+            <MDBCollapse id="navbarCollapseDoctor" isOpen={this.state.isOpen} navbar>
                <MDBNavbarNav left>
                   <MDBNavItem active={this.state.activeLinks.home} onClick={this.setHomeActive}>
-                     <MDBNavLink to={routes.patient.home}>Home</MDBNavLink>
+                     <MDBNavLink to={routes.doctor.home}>Home</MDBNavLink>
                   </MDBNavItem>
                   <MDBNavItem active={this.state.activeLinks.permissions} onClick={this.setPermissionsActive}>
-                     <MDBNavLink to={routes.patient.permissions}>Permissions</MDBNavLink>
-                  </MDBNavItem>
-                  <MDBNavItem active={this.state.activeLinks.permissions}>
-                     <MDBDropdown>
-                        <MDBDropdownToggle nav caret>
-                           <div className="d-none d-md-inline">Permissions</div>
-                        </MDBDropdownToggle>
-                        <MDBDropdownMenu className="dropdown-default" right>
-                           <MDBDropdownItem>List</MDBDropdownItem>
-                           <MDBDropdownItem>Add</MDBDropdownItem>
-                        </MDBDropdownMenu>
-                     </MDBDropdown>
+                     <MDBNavLink to={routes.doctor.permissions}>Permissions</MDBNavLink>
                   </MDBNavItem>
                </MDBNavbarNav>
                <MDBNavbarNav right>

@@ -149,6 +149,7 @@ class MedicForm extends React.Component {
                   type="text"
                />
                <ReadInstrutionsCBox
+                  checked={this.props.readInstruction}
                   input_name="readInstruction"
                   changeHandler={this.changeHandler}
                />

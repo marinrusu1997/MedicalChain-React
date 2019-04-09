@@ -119,6 +119,6 @@ export const isDoctorFormValid = form => (
    isUniqueIdentificationCodeValid(form.unique_identification_code) &&
    isDiplomaSeriesValid(form.diploma_series) &&
    isSpecialistPhysicianCertificateSeriesValid(form.specialist_physician_certificate_series) &&
-   isAccountNameValid(form.account_name) &&
+   isAccountNameValid(form.accountName) &&
    form.readInstruction
 )

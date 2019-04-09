@@ -28,7 +28,8 @@ export class PermissionModal extends React.Component {
             interval: this.props.permInfoForModify.interval,
             start: this.props.permInfoForModify.start_time,
             stop: this.props.permInfoForModify.end_time,
-            right: this.props.permInfoForModify.right
+            right: this.props.permInfoForModify.right,
+            specialties: this.props.permInfoForModify.specialties
          }
       }
    }
@@ -41,13 +42,14 @@ export class PermissionModal extends React.Component {
 
    _getNormalizedPerm = () => ({
       doctor: this.permFromForm.doctor,
-      specialtyid: this.props.permNomenclatories.specialitiesNomenclatory.get(this.permFromForm.specialty),
+      specialtyids: this.permFromForm.specialties.map(specialty => this.props.permNomenclatories.specialitiesNomenclatory.get(specialty)),
       rightid: this.props.permNomenclatories.rightsNomenclatory.get(this.permFromForm.right),
       from: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.start) / 1000).toFixed(0) : 0,
       to: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.stop) / 1000).toFixed(0) : 0
    })
 
    _getNormalizedUpdatedPerm = () => ({
+      specialtyids: this.permFromForm.specialties.map(specialty => this.props.permNomenclatories.specialitiesNomenclatory.get(specialty)),
       rightid: this.props.permNomenclatories.rightsNomenclatory.get(this.permFromForm.right),
       from: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.start) / 1000).toFixed(0) : 0,
       to: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.stop) / 1000).toFixed(0) : 0

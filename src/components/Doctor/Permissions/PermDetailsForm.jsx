@@ -1,11 +1,10 @@
 import React from 'react'
 import { MDBCard, MDBCardBody, MDBInput } from 'mdbreact'
-
-import 'react-bootstrap-toggle/dist/bootstrap2-toggle.css'
 import { IntervalInput } from '../../Permission-Commons/IntervalInput';
 import { NomenclatoryDropdown } from '../../Utils/NomenclatoryDropdown';
 
-export class AddPermForm extends React.Component {
+export class PermDetailsForm extends React.Component {
+
    constructor(props) {
       super(props)
       this.rights = []
@@ -30,11 +29,11 @@ export class AddPermForm extends React.Component {
                <form className="needs-validation" onSubmit={this.submitHandler} noValidate>
                   <div className="grey-text">
                      <MDBInput
-                        name='doctor'
+                        name='patient_acc'
                         onChange={this.props.onInputChange}
-                        label="Doctor account"
+                        label="Patient account"
                         iconClass="teal-text"
-                        icon="user-md"
+                        icon="user-tie"
                         type="text"
                         required
                      />

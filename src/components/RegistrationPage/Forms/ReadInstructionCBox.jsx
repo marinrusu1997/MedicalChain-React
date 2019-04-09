@@ -5,6 +5,7 @@ export class ReadInstrutionsCBox extends React.Component {
       return (
          <div className="custom-control custom-checkbox pl-3">
             <input
+               checked={this.props.checked}
                name={this.props.input_name}
                onChange={this.props.changeHandler}
                required

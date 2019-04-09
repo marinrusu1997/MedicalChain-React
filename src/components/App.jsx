@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import PatientMainPage from './Patient/PatientMainPage'
+import { PatientMainPage } from './Patient/PatientMainPage'
+import { DoctorMainPage } from './Doctor/DoctorMainPage'
 import { Registration } from './RegistrationPage/Registration'
 import { StartPage } from './StartPage/StartPage'
 import {
@@ -98,7 +99,7 @@ class App extends React.Component {
         case USER_TYPE_PATIENT:
           return <PatientMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
         case USER_TYPE_MEDIC:
-          return <PatientMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
+          return <DoctorMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
         case USER_TYPE_RESEARCHER:
           return <PatientMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
         default:

@@ -16,10 +16,12 @@ import '../../css/buttons.css'
 import { tryCreatePatientAccount, tryCreateDoctorAccount } from '../../blockchain/eosio-client'
 import { errorToast } from '../Utils/Toasts'
 import { ObjectDecorator } from '../../utils/ObjectDecorator'
+import { resetDoctorRegistrationForm } from '../../store/Registration/Forms/Doctor/actions'
+import { resetPatientRegistrationForm } from '../../store/Registration/Forms/Patient/actions'
 
 class RegistrationButton extends React.Component {
 
-   handlePatientRegistration = async registrationInfo => {
+   handlePatientRegistration = registrationInfo => {
       this.props.accountCreationRequestSent()
       tryCreatePatientAccount(registrationInfo, creation => {
          this.props.accountCreationResponseReady()
@@ -27,11 +29,12 @@ class RegistrationButton extends React.Component {
             errorToast(creation.msg)
          } else {
             this.props.accountCreatedSuccessfullyAction(creation.accountDetails)
+            this.props.resetPatientRegistrationForm()
          }
       })
    }
 
-   handleDoctorRegistration = async registrationInfo => {
+   handleDoctorRegistration = registrationInfo => {
       this.props.accountCreationRequestSent()
       tryCreateDoctorAccount(registrationInfo, creation => {
          this.props.accountCreationResponseReady()
@@ -39,6 +42,7 @@ class RegistrationButton extends React.Component {
             errorToast(creation.msg)
          } else {
             this.props.accountCreatedSuccessfullyAction(creation.accountDetails)
+            this.props.resetDoctorRegistrationForm()
          }
       })
    }
@@ -61,7 +65,7 @@ class RegistrationButton extends React.Component {
       unique_identification_code: this.props.doctor.unique_identification_code.trim(),
       diploma_series: this.props.doctor.diploma_series.trim(),
       specialist_physician_certificate_series: this.props.doctor.specialist_physician_certificate_series.trim(),
-      account_name: this.props.doctor.account_name,
+      accountName: this.props.doctor.account_name.trim(),
       readInstruction: this.props.doctor.readInstruction
    })
 
@@ -81,6 +85,8 @@ class RegistrationButton extends React.Component {
             }
          }
             break;
+         default:
+            errorToast('Invalid user type ' + this.props.currentUserType)
       }
    }
 
@@ -106,7 +112,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
    accountCreatedSuccessfullyAction,
    accountCreationRequestSent,
-   accountCreationResponseReady
+   accountCreationResponseReady,
+   resetPatientRegistrationForm,
+   resetDoctorRegistrationForm
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationButton)

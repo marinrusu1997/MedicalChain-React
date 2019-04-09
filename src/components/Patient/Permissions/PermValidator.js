@@ -5,7 +5,7 @@ const hasRequiredFields = perm => {
       errorToast('Doctor field is mandatory')
       return false
    }
-   if (!!!perm.specialty) {
+   if (!!!perm.specialties) {
       errorToast('Select specialty from dropdown')
       return false
    }
@@ -46,6 +46,19 @@ const validateEndTime = perm => {
    return true
 }
 
+const validateTimeIsInCorrectInterval = perm => {
+   const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
+   const stopTime = (Date.parse(perm.stop) / 1000).toFixed(0)
+
+   if (startTime === 0 && stopTime === 0)
+      return true
+   if (startTime !== 0 && stopTime !== 0)
+      return true
+   console.error('start: ', startTime, 'stop: ', stopTime)
+   errorToast('Start and End time are not in a valid interval. This is a sofware bug, please reload the page and retry')
+   return false
+}
+
 const validateDoctor = account => {
    if (account.length === 0 || !account.trim()) {
       errorToast("Doctor account name can't be empty")
@@ -62,8 +75,8 @@ const validateDoctor = account => {
    return true
 }
 
-const validateSpecialty = specialty => {
-   if (specialty !== specialty.toUpperCase()) {
+const validateSpecialties = specialties => {
+   if (specialties.length === 0) {
       errorToast('Select specialty(i.e in uppercase ones)')
       return false
    }
@@ -83,9 +96,11 @@ export const validateForAdding = perm => {
       return false
    if (!!!validateDoctor(perm.doctor))
       return false
-   if (!!!validateSpecialty(perm.specialty))
+   if (!!!validateSpecialties(perm.specialties))
       return false
    if (!!!validateRight(perm.right))
+      return false
+   if (!!!validateTimeIsInCorrectInterval(perm))
       return false
    if (perm.interval === "LIMITED") {
       if (!!!validateStartTime(perm))
@@ -118,6 +133,10 @@ export const validateForUpdating = perm => {
    if (!!!preliminaryValidationsForUpdating(perm))
       return false
    if (!!!validateRight(perm.right))
+      return false
+   if (!!!validateSpecialties(perm.specialties))
+      return false
+   if (!!!validateTimeIsInCorrectInterval(perm))
       return false
    if (perm.interval === "LIMITED") {
       if (!!!validateStartTime(perm))

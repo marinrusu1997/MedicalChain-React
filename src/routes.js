@@ -3,5 +3,9 @@ export const routes = {
    patient: {
       home: '/patient/home',
       permissions: '/patient/permissions'
+   },
+   doctor: {
+      home: '/doctor/home',
+      permissions: '/doctor/permissions'
    }
 }

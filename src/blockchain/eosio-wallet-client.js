@@ -12,7 +12,7 @@ const requiredFields = {
 }
 
 const medicalContract = {
-   account: 'medical4',
+   account: 'medical5',
    actions: {
       addperm: 'addperm',
       updtperm: 'updtperm',
@@ -21,7 +21,7 @@ const medicalContract = {
    tables: {
       rights: { name: 'rights', limit: 1 },
       specialities: { name: 'specialities', limit: 1 },
-      records: { name: 'records', limit: 1 },
+      patients: { name: 'patients', limit: 1 },
       permissions: { name: 'permissions', limit: 10 }
    }
 }
@@ -130,7 +130,6 @@ class EOSIOWalletClient {
          onSuc()
       } catch (e) {
          console.error(e)
-         console.error(e)
          if (e instanceof RpcError) {
             onErr(getErrMsgFromRpcErr(e))
          } else if (e.message) {
@@ -157,7 +156,6 @@ class EOSIOWalletClient {
          onSuc()
       } catch (e) {
          console.error(e)
-         console.error(e)
          if (e instanceof RpcError) {
             onErr(getErrMsgFromRpcErr(e))
          } else if (e.message) {
@@ -168,10 +166,10 @@ class EOSIOWalletClient {
       }
    }
 
-   records = async () => {
+   patients = async () => {
       if (!!!this.account)
          throw new Error('Failed load records table : Not connected to wallet')
-      const { name, limit } = medicalContract.tables.records
+      const { name, limit } = medicalContract.tables.patients
       return await this._table(name, this.account.name, limit)
    }
 
@@ -230,7 +228,7 @@ class EOSIOWalletClient {
                patient: this.account.name,
                doctor: perm.doctor
             },
-            specialtyid: perm.specialtyid,
+            specialtyids: perm.specialtyids,
             rightid: perm.rightid,
             interval: {
                from: perm.from,
@@ -261,6 +259,7 @@ class EOSIOWalletClient {
                doctor: perm.doctor
             },
             permid: perm.permid,
+            specialtyids: perm.specialtyids,
             rightid: perm.rightid,
             interval: {
                from: perm.from,

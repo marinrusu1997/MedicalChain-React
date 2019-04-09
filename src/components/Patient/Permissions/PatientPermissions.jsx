@@ -20,7 +20,7 @@ const table_mapping = {
       },
       {
          label: [<i key="Specialty" className="fa fa-hospital-symbol mr-2 teal-text" aria-hidden="true"></i>, 'Specialty'],
-         field: 'specialty',
+         field: 'specialties',
          sort: 'asc',
          width: 200
       },
@@ -92,6 +92,8 @@ class _PatientPermissions extends React.Component {
       this.perm_modal_header_msg = null
       this.toggleMap = new Map()
       this.permIdsCheduledForChanging = []
+      this.specialtiesDelimiter = ", "
+      this.onToggleCallback = (() => this.perm_modal_header_msg = null).bind(this)
    }
 
    componentDidMount() {
@@ -152,7 +154,7 @@ class _PatientPermissions extends React.Component {
       this.toggleMap.set(perm_info.id, false)
       return {
          change: this.__makeTogleForChangeScheduling(perm_info.id, doctor, false),
-         specialty: this.props.specialitiesNomenclatory.get(perm_info.specialtyid),
+         specialties: perm_info.specialtyids.map(id => this.props.specialitiesNomenclatory.get(id)).join(this.specialtiesDelimiter),
          doctor: this.__retrieveDoctorName(doctor),
          account: doctor,
          right: this.props.rightsNomenclatory.get(perm_info.right),
@@ -194,7 +196,7 @@ class _PatientPermissions extends React.Component {
 
    __retrieveLastAddedPermFromBlockchain = async doctor => {
       try {
-         const _records = await eosio_client.records()
+         const _records = await eosio_client.patients()
          const _doctor_perms = _records.rows[0].perms.find(permKV => permKV.key === doctor)
          const greatestPermId = this._getGreatestPermId(_records.rows[0].perms)
          const _perms = await eosio_client.permissions_from_limit(greatestPermId)
@@ -222,21 +224,21 @@ class _PatientPermissions extends React.Component {
 
    _requestPermsFromBlockchain = async () => {
       try {
-         const _records = await eosio_client.records()
-         if (!!!_records.rows.length) {
+         const _patients = await eosio_client.patients()
+         if (!!!_patients.rows.length) {
             errorToast("Seems that you are not registered yet")
             return
          }
-         if (!!!_records.rows[0].perms.length) {
+         if (!!!_patients.rows[0].perms.length) {
             infoToast("You don't have any permissions")
             return
          }
-         const noOfPerms = _records.rows[0].perms.reduce((accumulator, current) => accumulator + current.value.length, 0)
+         const noOfPerms = _patients.rows[0].perms.reduce((accumulator, current) => accumulator + current.value.length, 0)
          const _perms = await eosio_client.permissions(noOfPerms)
          if (_perms.more) {
             errorToast('Some permissions have remained unloaded from the blockchain')
          }
-         this.setState({ table: { columns: table_mapping.columns, rows: this.__getNormalizedPerms(_records.rows[0].perms, _perms.rows) } })
+         this.setState({ table: { columns: table_mapping.columns, rows: this.__getNormalizedPerms(_patients.rows[0].perms, _perms.rows) } })
       } catch (e) {
          console.error(e)
          errorToast(e.name + ' : ' + e.message)
@@ -260,7 +262,10 @@ class _PatientPermissions extends React.Component {
       this.setState({ perm_modal: { isOpen: true, isAddingModal: isAddingModal } })
    }
 
-   _toglePermModal = () => this.setState({ perm_modal: { isOpen: false }, tr_receipt: null })
+   _toglePermModal = () => {
+      this.onToggleCallback()
+      this.setState({ perm_modal: { isOpen: false }, tr_receipt: null })
+   }
 
    __checkForReversedNomenclatories = () => {
       if (!!!this.reversedRightsNomenclatory || !!!this.reversedSpecialitiesNomenclatory) {
@@ -340,7 +345,6 @@ class _PatientPermissions extends React.Component {
          <center>
             <b>
                You are updating the permission with id <mark>{row.change.props.id}</mark>
-               within <mark>{row.specialty}</mark> specialty
                which belongs to doctor account <mark>{row.account}</mark>
             </b>
          </center>
@@ -353,7 +357,8 @@ class _PatientPermissions extends React.Component {
          interval: row.end_time === 'INFINITE' ? 'INFINITE' : 'LIMITED',
          start_time: row.start_time,
          end_time: row.end_time,
-         right: row.right
+         right: row.right,
+         specialties: row.specialties.split(this.specialtiesDelimiter)
       }
    }
 
@@ -381,6 +386,7 @@ class _PatientPermissions extends React.Component {
                   ? row
                   : {
                      ...row,
+                     specialties: permInfo.specialtyids.map(id => this.props.specialitiesNomenclatory.get(id)).join(this.specialtiesDelimiter),
                      right: this.props.rightsNomenclatory.get(permInfo.rightid),
                      start_time: permInfo.from === 0 ? 'INFINITE' : this.__getNormalizedDateTime(permInfo.from),
                      end_time: permInfo.to === 0 ? 'INFINITE' : this.__getNormalizedDateTime(permInfo.to)

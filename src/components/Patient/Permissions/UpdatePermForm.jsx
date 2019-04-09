@@ -1,6 +1,6 @@
 import React from 'react'
 import { MDBCard, MDBCardBody } from 'mdbreact'
-import { IntervalInput } from './IntervalInput'
+import { IntervalInput } from '../../Permission-Commons/IntervalInput'
 import { NomenclatoryDropdown } from '../../Utils/NomenclatoryDropdown'
 
 export class UpdatePermForm extends React.Component {
@@ -11,15 +11,21 @@ export class UpdatePermForm extends React.Component {
       props.permNomenclatories.rightsNomenclatory.forEach((id, right) => {
          this.rights.push(right)
       })
+      this.specialities = []
+      props.permNomenclatories.specialitiesNomenclatory.forEach((id, specialty) => {
+         this.specialities.push(specialty)
+      })
       this.state = null
-      this.selections = []
+      this.rightSelections = []
+      this.specialitiesSelections = []
       if (this.props.permInfo) {
          this.state = {
             interval: this.props.permInfo.interval,
             start: this.props.permInfo.start_time !== "INFINITE" ? this.props.permInfo.start_time : "",
             stop: this.props.permInfo.end_time !== "INFINITE" ? this.props.permInfo.end_time : ""
          }
-         this.selections = [this.props.permInfo.right]
+         this.rightSelections = [this.props.permInfo.right]
+         this.specialitiesSelections = this.props.permInfo.specialties
       } else {
          this.state = {
             interval: 'INFINITE',
@@ -62,8 +68,17 @@ export class UpdatePermForm extends React.Component {
                      <NomenclatoryDropdown
                         options={this.rights}
                         icon={{ className: "teal-text", type: "book-reader" }}
-                        selections={this.selections}
+                        selections={this.rightSelections}
                         onSelection={rights => this.props.onInputChange({ target: { name: 'right', value: rights[0] } })}
+                     />
+                     <NomenclatoryDropdown
+                        id="add-specialties"
+                        options={this.specialities}
+                        multiple={true}
+                        selections={this.specialitiesSelections}
+                        placeholder="Choose specialty..."
+                        icon={{ className: "teal-text", type: "hospital-symbol" }}
+                        onSelection={specialties => this.props.onInputChange({ target: { name: 'specialties', value: specialties } })}
                      />
                   </div>
                   {this.props.children}

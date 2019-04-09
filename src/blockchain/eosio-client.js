@@ -14,98 +14,77 @@ const createEncryptionKeys = passphrase => {
    }
 }
 
-export const tryCreatePatientAccount = async (registrationInfo, registrCb) => {
-   let ownerKeys = await EOSIOCrypto.makeKeys()
-   let activeKeys = await EOSIOCrypto.makeKeys()
-   let { privRSAJSON, publicEncStr } = createEncryptionKeys("" + registrationInfo.ssn + registrationInfo.birthday)
-   let account = {
-      name: registrationInfo.accountName,
-      ownerKey: ownerKeys.public,
-      activeKey: activeKeys.public,
-      encryptionKey: publicEncStr
+const __makeRequiredKeysObj = async registrationInfo => ({
+   ownerKeys: await EOSIOCrypto.makeKeys(),
+   activeKeys: await EOSIOCrypto.makeKeys(),
+   encryptionKeys: createEncryptionKeys("" + registrationInfo.ssn + registrationInfo.birthday)
+})
+
+const __makeAccountObj = (accountName, keys) => ({
+   name: accountName,
+   ownerKey: keys.ownerKeys.public,
+   activeKey: keys.activeKeys.public,
+   encryptionKey: keys.encryptionKeys.publicEncStr
+})
+
+const __makeAccountCreationInfoObj = (registrationInfo, accountObj) => ({
+   userInfo: ObjectDecorator.removeProperty(registrationInfo, 'accountName'),
+   accountInfo: accountObj
+})
+
+const __makeAccountRegistrationDetailsObj = (accountObj, keys, tr_receipt) => ({
+   isSuccessfull: true,
+   accountDetails: {
+      name: accountObj.name,
+      keys: {
+         owner: keys.ownerKeys.private,
+         active: keys.activeKeys.private,
+         encryption: keys.encryptionKeys.privRSAJSON
+      },
+      transaction: {
+         id: tr_receipt.transaction_id,
+         block_time: tr_receipt.block_time,
+         block_num: tr_receipt.block_num,
+         ...tr_receipt.receipt
+      }
    }
-   let accountCreationInfo = {
-      userInfo: ObjectDecorator.removeProperty(registrationInfo, 'accountName'),
-      accountInfo: account
-   }
+})
+
+const __makeErrorDetailsObj = error => ({
+   isSuccessfull: false,
+   msg: error.response
+      ? error.response.data.message ? error.response.data.message : 'Failed to connect to identification service'
+      : 'Internet connection error'
+})
+
+const tryCreateAccount = async (registrationInfo, registrCb, api) => {
+   const requiredKeys = await __makeRequiredKeysObj(registrationInfo)
+   const account = __makeAccountObj(registrationInfo.accountName, requiredKeys)
+   const accountCreationInfo = __makeAccountCreationInfoObj(registrationInfo, account)
 
    try {
-      let res = await axios({
-         method: validationService.validatePatientIdentity.method,
-         url: validationService.validatePatientIdentity.api,
+      const res = await axios({
+         ...api,
          data: accountCreationInfo
       })
-      registrCb({
-         isSuccessfull: true,
-         accountDetails: {
-            name: account.name,
-            keys: {
-               owner: ownerKeys.private,
-               active: activeKeys.private,
-               encryption: privRSAJSON
-            },
-            transaction: {
-               id: res.data.transaction_id,
-               block_time: res.data.block_time,
-               block_num: res.data.block_num,
-               ...res.data.receipt
-            }
-         }
-      })
+      registrCb(__makeAccountRegistrationDetailsObj(account, requiredKeys, res.data))
    } catch (e) {
       console.error(e)
-      registrCb({
-         isSuccessfull: false,
-         msg: e.response
-            ? e.response.data.message ? e.response.data.message : 'Failed to connect to identification service'
-            : 'Internet connection error'
-      })
+      registrCb(__makeErrorDetailsObj(e))
    }
 }
 
-export const tryCreateDoctorAccount = async (registrationInfo, registrCb) => {
-   let ownerKeys = await EOSIOCrypto.makeKeys()
-   let activeKeys = await EOSIOCrypto.makeKeys()
-   let account = {
-      name: registrationInfo.account_name,
-      ownerKey: ownerKeys.public,
-      activeKey: activeKeys.public
-   }
-   let accountCreationInfo = {
-      userInfo: ObjectDecorator.removeProperty(registrationInfo, 'account_name'),
-      accountInfo: account
-   }
+export const tryCreatePatientAccount = async (registrationInfo, registrCb) => {
+   await tryCreateAccount(registrationInfo, registrCb, {
+      method: validationService.validatePatientIdentity.method,
+      url: validationService.validatePatientIdentity.api,
+   })
+}
 
-   try {
-      let res = await axios({
-         method: validationService.validateDoctorIdentity.method,
-         url: validationService.validateDoctorIdentity.api,
-         data: accountCreationInfo
-      })
-      registrCb({
-         isSuccessfull: true,
-         accountDetails: {
-            name: account.name,
-            keys: {
-               owner: ownerKeys.private,
-               active: activeKeys.private
-            },
-            transaction: {
-               id: res.data.transaction_id,
-               block_time: res.data.block_time,
-               block_num: res.data.block_num,
-               ...res.data.receipt
-            }
-         }
-      })
-   } catch (e) {
-      console.error(e)
-      registrCb({
-         isSuccessfull: false,
-         msg: e.response
-            ? e.response.data.message ? e.response.data.message : 'Failed to connect to identification service'
-            : 'Internet connection error'
-      })
-   }
+export const tryCreateDoctorAccount = async (registrationInfo, registrCb) => {
+   await tryCreateAccount(registrationInfo, registrCb, {
+      method: validationService.validateDoctorIdentity.method,
+      url: validationService.validateDoctorIdentity.api,
+   })
 }
 
