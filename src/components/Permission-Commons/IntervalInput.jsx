@@ -28,7 +28,7 @@ export class IntervalInput extends React.Component {
                   active={this.state.toggleActive}
                   onstyle="danger"
                   offstyle="success"
-                  onClick={this.onToggle}
+                  onClick={this.props.unmodifiable ? () => { } : this.onToggle}
                   on={<b>INFINITE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>}
                   off={<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIMITED</b>}
                   recalculateOnResize={true}

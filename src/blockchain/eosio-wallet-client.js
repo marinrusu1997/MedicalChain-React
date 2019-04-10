@@ -166,18 +166,26 @@ class EOSIOWalletClient {
       }
    }
 
+   patients_by_scope = async patient_acc_scope => {
+      const { name, limit } = medicalContract.tables.patients
+      return await this._table(name, patient_acc_scope, limit)
+   }
+
    patients = async () => {
       if (!!!this.account)
          throw new Error('Failed load records table : Not connected to wallet')
-      const { name, limit } = medicalContract.tables.patients
-      return await this._table(name, this.account.name, limit)
+      return await this.patients_by_scope(this.account.name)
+   }
+
+   permissions_by_scope = async (limit, patient_acc_scope) => {
+      const { name } = medicalContract.tables.permissions
+      return await this._table(name, patient_acc_scope, limit)
    }
 
    permissions = async limit => {
       if (!!!this.account)
          throw new Error('Failed load permissions table : Not connected to wallet')
-      const { name } = medicalContract.tables.permissions
-      return await this._table(name, this.account.name, limit)
+      return await this.permissions_by_scope(limit, this.account.name)
    }
 
    permissions_from_limit = async lower_bound => {

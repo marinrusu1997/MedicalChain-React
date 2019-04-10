@@ -8,7 +8,7 @@ class _CheckForPermBtn extends React.Component {
    constructor(props) {
       super(props)
 
-      this.permNomenclatories = null
+      this.permNomenclatoriesReversed = null
       this.reversedRightsNomenclatory = null
       this.reversedSpecialitiesNomenclatory = null
    }
@@ -25,13 +25,13 @@ class _CheckForPermBtn extends React.Component {
    }
 
    __areNomeclatoriesPrepared = () => {
-      return this.permNomenclatories !== null
+      return this.permNomenclatoriesReversed !== null
    }
 
    __tryPrepareReversedNomenclatories = () => {
       if (this.props.rightsNomenclatory && this.props.specialitiesNomenclatory) {
          this.__prepareReversedNomenclatories()
-         this.permNomenclatories = {
+         this.permNomenclatoriesReversed = {
             rightsNomenclatory: this.reversedRightsNomenclatory,
             specialitiesNomenclatory: this.reversedSpecialitiesNomenclatory
          }
@@ -50,7 +50,13 @@ class _CheckForPermBtn extends React.Component {
 
    onCheckForPermsHandler = () => {
       if (this.__areNomeclatoriesPrepared() || this.__tryPrepareReversedNomenclatories()) {
-         this.props.onCheckForPerms(this.permNomenclatories)
+         this.props.onCheckForPerms({
+            normal: {
+               rightsNomenclatory: this.props.rightsNomenclatory,
+               specialitiesNomenclatory: this.props.specialitiesNomenclatory
+            },
+            reversed: this.permNomenclatoriesReversed
+         })
       } else {
          errorToast('Nomenclatories are not loaded')
       }

@@ -7,7 +7,7 @@ import {
 } from 'mdbreact'
 import { AddPermForm } from './AddPermForm'
 import { UpdatePermForm } from './UpdatePermForm'
-import { validateForAdding, validateForUpdating } from './PermValidator'
+import { validateForAdding, validateForUpdating } from '../../Permission-Commons/PermValidator'
 import { TransactionReceipt } from '../../Modals/TransactionReceipt'
 
 export class PermissionModal extends React.Component {

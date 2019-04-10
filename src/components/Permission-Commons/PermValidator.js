@@ -1,18 +1,30 @@
-import { errorToast } from '../../Utils/Toasts'
+import { errorToast } from '../Utils/Toasts'
 
-const hasRequiredFields = perm => {
+export const hasDoctorAccount = perm => {
    if (!!!perm.doctor) {
       errorToast('Doctor field is mandatory')
       return false
    }
+   return true
+}
+
+export const hasSpecialties = perm => {
    if (!!!perm.specialties) {
       errorToast('Select specialty from dropdown')
       return false
    }
+   return true
+}
+
+export const hasRights = perm => {
    if (!!!perm.right) {
       errorToast('Select right from dropdown')
       return false
    }
+   return true
+}
+
+export const hasLimitedInterval = perm => {
    if (perm.interval === "LIMITED") {
       if (!!!perm.start) {
          errorToast('Start date is mandatory')
@@ -26,27 +38,34 @@ const hasRequiredFields = perm => {
    return true
 }
 
-const validateStartTime = perm => {
+export const hasRequiredFields = perm => (
+   hasDoctorAccount(perm) &&
+   hasSpecialties(perm) &&
+   hasRights(perm) &&
+   hasLimitedInterval(perm)
+)
+
+export const validateStartTime = perm => {
    const currentTime = (new Date().getTime() / 1000).toFixed(0)
    const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
-   if ((startTime - 60) <= currentTime) {
+   if ((startTime - 60) < currentTime) {
       errorToast('Start time must be at least 1 min greather than current time')
       return false
    }
    return true
 }
 
-const validateEndTime = perm => {
+export const validateEndTime = perm => {
    const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
    const stopTime = (Date.parse(perm.stop) / 1000).toFixed(0)
-   if (stopTime - 60 <= startTime) {
-      errorToast('End time must be at least 1 min greather than start time')
+   if (stopTime - 300 < startTime) {
+      errorToast('End time must be at least 5 min greather than start time')
       return false
    }
    return true
 }
 
-const validateTimeIsInCorrectInterval = perm => {
+export const validateTimeIsInCorrectInterval = perm => {
    const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
    const stopTime = (Date.parse(perm.stop) / 1000).toFixed(0)
 
@@ -59,23 +78,23 @@ const validateTimeIsInCorrectInterval = perm => {
    return false
 }
 
-const validateDoctor = account => {
+export const validateAccount = account => {
    if (account.length === 0 || !account.trim()) {
-      errorToast("Doctor account name can't be empty")
+      errorToast("Account name can't be empty")
       return false
    }
    if (!!!(account.charAt(0) >= 'a' && account.charAt(0) <= 'z')) {
-      errorToast('Doctor account name must start with a lower case letter')
+      errorToast('Account name must start with a lower case letter')
       return false
    }
    if (!!!account.match(/^[a-z1-5]+$/)) {
-      errorToast('Doctor account name can only contain the characters a-z (lowercase) and 1-5 ')
+      errorToast('Account name can only contain the characters a-z (lowercase) and 1-5 ')
       return false
    }
    return true
 }
 
-const validateSpecialties = specialties => {
+export const validateSpecialties = specialties => {
    if (specialties.length === 0) {
       errorToast('Select specialty(i.e in uppercase ones)')
       return false
@@ -83,7 +102,7 @@ const validateSpecialties = specialties => {
    return true
 }
 
-const validateRight = right => {
+export const validateRight = right => {
    if (right === "Right") {
       errorToast('Select a valid right')
       return false
@@ -91,10 +110,22 @@ const validateRight = right => {
    return true
 }
 
+export const tryValidateLimitedInterval = perm => {
+   if (perm.interval === "LIMITED") {
+      if (!!!validateStartTime(perm))
+         return false
+      if (!!!validateEndTime(perm))
+         return false
+      return true
+   } else if (perm.interval === 'INFINITE') {
+      return true
+   }
+}
+
 export const validateForAdding = perm => {
    if (!!!hasRequiredFields(perm))
       return false
-   if (!!!validateDoctor(perm.doctor))
+   if (!!!validateAccount(perm.doctor))
       return false
    if (!!!validateSpecialties(perm.specialties))
       return false
@@ -102,16 +133,12 @@ export const validateForAdding = perm => {
       return false
    if (!!!validateTimeIsInCorrectInterval(perm))
       return false
-   if (perm.interval === "LIMITED") {
-      if (!!!validateStartTime(perm))
-         return false
-      if (!!!validateEndTime(perm))
-         return false
-   }
+   if (!!!tryValidateLimitedInterval(perm))
+      return false
    return true
 }
 
-const preliminaryValidationsForUpdating = perm => {
+export const preliminaryValidationsForUpdating = perm => {
    if (!!!perm.right) {
       errorToast('Select right from dropdown')
       return false
@@ -138,11 +165,7 @@ export const validateForUpdating = perm => {
       return false
    if (!!!validateTimeIsInCorrectInterval(perm))
       return false
-   if (perm.interval === "LIMITED") {
-      if (!!!validateStartTime(perm))
-         return false
-      if (!!!validateEndTime(perm))
-         return false
-   }
+   if (!!!tryValidateLimitedInterval(perm))
+      return false
    return true
 }

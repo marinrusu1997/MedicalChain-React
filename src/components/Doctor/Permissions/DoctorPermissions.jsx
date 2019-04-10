@@ -6,6 +6,7 @@ import { CheckForPermModal } from "./CheckForPermModal"
 import { PatientAccountButton } from './PatientAccountButton'
 import { CheckForPermBtn } from './CheckForPermBtn'
 import { table_mapping } from './RequestsTableMapping'
+import { errorToast, succToast } from "../../Utils/Toasts";
 
 import { check_if_has_req_perms } from './CheckForPermImpl'
 
@@ -19,6 +20,7 @@ export class DoctorPermissions extends React.Component {
          }
       }
 
+      this.nomenclatories = null
       this.permNomenclatoriesForModal = null
    }
 
@@ -30,13 +32,22 @@ export class DoctorPermissions extends React.Component {
 
    }
 
-   onCheckForPermsHandler = nomenclatories => {
-      this.permNomenclatoriesForModal = nomenclatories
+   onCheckForPermsBtnHandler = nomenclatories => {
+      this.nomenclatories = nomenclatories
+      this.permNomenclatoriesForModal = this.nomenclatories.reversed
       this.onCheckForPermToggle()
    }
 
    onCheckForPermToggle = () => {
       this.setState({ check_for_perm_modal: { isOpen: !!!this.state.check_for_perm_modal.isOpen } })
+   }
+
+   _doCheckForPerm = req_perm => {
+      check_if_has_req_perms(
+         this.nomenclatories.normal,
+         msg => succToast(msg),
+         msg => errorToast(msg)
+      )(req_perm)
    }
 
    render() {
@@ -46,7 +57,7 @@ export class DoctorPermissions extends React.Component {
                isOpen={this.state.check_for_perm_modal.isOpen}
                toggle={this.onCheckForPermToggle}
                permNomenclatories={this.permNomenclatoriesForModal}
-               onCheckForPerm={check_if_has_req_perms}
+               onCheckForPerm={this._doCheckForPerm}
             />
 
             <MDBCard narrow>
@@ -56,7 +67,7 @@ export class DoctorPermissions extends React.Component {
                   <a href="#!" className="white-text mx-3">Requests for permissions Management</a>
                   <div>
                      <PatientAccountButton />
-                     <CheckForPermBtn onCheckForPerms={this.onCheckForPermsHandler} />
+                     <CheckForPermBtn onCheckForPerms={this.onCheckForPermsBtnHandler} />
                      <MDBBtn outline rounded size="sm" color="white" className="px-2 btn-circle" onClick={this.onRequestForPermsHandler}>
                         <i className="fas fa-plus-circle mt-0"></i>
                      </MDBBtn>

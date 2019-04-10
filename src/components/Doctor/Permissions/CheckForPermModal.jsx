@@ -1,16 +1,31 @@
 import React from "react";
 import { PermDetailsForm } from "./PermDetailsForm";
 import { MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } from 'mdbreact'
+import { validatePermFromForm } from "./PermDetailsFormValidator";
 
 export class CheckForPermModal extends React.Component {
    constructor(props) {
       super(props)
-      this.permFromForm = {}
+      this.permFromForm = {
+         interval: 'LIMITED'
+      }
    }
 
    __resetPermFromForm = () => {
-      this.permFromForm = {}
+      this.permFromForm = {
+         interval: 'LIMITED'
+      }
    }
+
+   _getNormalizedPerm = () => ({
+      patient: this.permFromForm.patient,
+      specialtyids: this.permFromForm.specialties.map(specialty => this.props.permNomenclatories.specialitiesNomenclatory.get(specialty)),
+      rightid: this.props.permNomenclatories.rightsNomenclatory.get(this.permFromForm.right),
+      interval: {
+         from: parseInt((Date.parse(this.permFromForm.start) / 1000).toFixed(0)),
+         to: parseInt((Date.parse(this.permFromForm.stop) / 1000).toFixed(0))
+      }
+   })
 
    onInputChange = event => {
       this.permFromForm[event.target.name] = event.target.value
@@ -22,7 +37,8 @@ export class CheckForPermModal extends React.Component {
    }
 
    handleCheckForPerm = () => {
-      this.props.onCheckForPerm(this.permFromForm)
+      if (validatePermFromForm(this.permFromForm))
+         this.props.onCheckForPerm(this._getNormalizedPerm())
    }
 
    render() {

@@ -29,7 +29,7 @@ export class PermDetailsForm extends React.Component {
                <form className="needs-validation" onSubmit={this.submitHandler} noValidate>
                   <div className="grey-text">
                      <MDBInput
-                        name='patient_acc'
+                        name='patient'
                         onChange={this.props.onInputChange}
                         label="Patient account"
                         iconClass="teal-text"
@@ -37,7 +37,7 @@ export class PermDetailsForm extends React.Component {
                         type="text"
                         required
                      />
-                     <IntervalInput onInputChange={this.props.onInputChange} />
+                     <IntervalInput onInputChange={this.props.onInputChange} unmodifiable />
                      <NomenclatoryDropdown
                         id="add-rights"
                         options={this.rights}
