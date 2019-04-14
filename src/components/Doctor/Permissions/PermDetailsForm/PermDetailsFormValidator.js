@@ -1,4 +1,4 @@
-import { errorToast } from '../../Utils/Toasts'
+import { errorToast } from '../../../Utils/Toasts'
 import {
    hasRights,
    hasSpecialties,
@@ -7,7 +7,7 @@ import {
    tryValidateLimitedInterval,
    validateRight,
    validateSpecialties
-} from '../../Permission-Commons/PermValidator'
+} from '../../../Permission-Commons/PermValidator'
 
 const hasPatientAccount = permFromForm => {
    if (!!!permFromForm.patient) {

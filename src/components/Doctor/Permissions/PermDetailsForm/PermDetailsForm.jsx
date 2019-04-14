@@ -1,7 +1,7 @@
 import React from 'react'
 import { MDBCard, MDBCardBody, MDBInput } from 'mdbreact'
-import { IntervalInput } from '../../Permission-Commons/IntervalInput';
-import { NomenclatoryDropdown } from '../../Utils/NomenclatoryDropdown';
+import { IntervalInput } from '../../../Permission-Commons/IntervalInput';
+import { NomenclatoryDropdown } from '../../../Utils/NomenclatoryDropdown';
 
 export class PermDetailsForm extends React.Component {
 

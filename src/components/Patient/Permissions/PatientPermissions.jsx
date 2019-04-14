@@ -7,6 +7,7 @@ import 'react-bootstrap-toggle/dist/bootstrap2-toggle.css'
 import '../../../css/buttons.css'
 
 import { eosio_client } from '../../../blockchain/eosio-wallet-client'
+import { getDoctorFullNamesFromAccs } from '../../../server'
 import { errorToast, succToast, infoToast } from '../../Utils/Toasts'
 import { PermissionModal } from './PermissionModal'
 import { ConfirmationModal } from '../../Utils/ConfirmationModal'
@@ -94,13 +95,21 @@ class _PatientPermissions extends React.Component {
       this.permIdsCheduledForChanging = []
       this.specialtiesDelimiter = ", "
       this.onToggleCallback = (() => this.perm_modal_header_msg = null).bind(this)
+      this.fullNameDoctorsAccsMap = null
    }
 
    componentDidMount() {
       this._getPermsDatasetAsync()
    }
 
-   __retrieveDoctorName = account => account + ' Implement prefetch of doctors from server'
+   __retrieveDoctorName = account => {
+      if (this.fullNameDoctorsAccsMap.size === 0)
+         return "Server is down, se we can't provide doctor full name"
+      const full_name = this.fullNameDoctorsAccsMap.get(account)
+      if (!!!full_name)
+         return "Server is down, se we can't provide doctor full name"
+      return full_name.surname + " " + full_name.name
+   }
 
    __getNormalizedDateTime = posix => {
       const date = new Date(posix * 1000)
@@ -194,6 +203,12 @@ class _PatientPermissions extends React.Component {
       return greatest
    }
 
+   __resolveDoctorNameForLastAddedPerm = async doctor => {
+      if (!!!this.fullNameDoctorsAccsMap.has(doctor)) {
+         this.fullNameDoctorsAccsMap.set(await getDoctorFullNamesFromAccs([doctor]).get(doctor))
+      }
+   }
+
    __retrieveLastAddedPermFromBlockchain = async doctor => {
       try {
          const _records = await eosio_client.patients()
@@ -213,6 +228,7 @@ class _PatientPermissions extends React.Component {
             return
          }
 
+         await this.__resolveDoctorNameForLastAddedPerm(doctor)
          const permRow = this.__makePermRow(latest_perm, doctor)
 
          this.setState({ table: { columns: table_mapping.columns, rows: [...this.state.table.rows, permRow] } })
@@ -220,6 +236,14 @@ class _PatientPermissions extends React.Component {
          console.error(e)
          errorToast('Error retrieving perms from blockchain' + ' : ' + e.message)
       }
+   }
+
+   __getDoctorsAccArrayFromPatientPerms = perms => {
+      const doctorAccArr = []
+      for (const perm of perms) {
+         doctorAccArr.push(perm.key)
+      }
+      return doctorAccArr
    }
 
    _requestPermsFromBlockchain = async () => {
@@ -238,6 +262,7 @@ class _PatientPermissions extends React.Component {
          if (_perms.more) {
             errorToast('Some permissions have remained unloaded from the blockchain')
          }
+         this.fullNameDoctorsAccsMap = await getDoctorFullNamesFromAccs(this.__getDoctorsAccArrayFromPatientPerms(_patients.rows[0].perms))
          this.setState({ table: { columns: table_mapping.columns, rows: this.__getNormalizedPerms(_patients.rows[0].perms, _perms.rows) } })
       } catch (e) {
          console.error(e)

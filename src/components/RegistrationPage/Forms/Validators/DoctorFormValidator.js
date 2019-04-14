@@ -112,6 +112,18 @@ const isAccountNameValid = account => {
    return true
 }
 
+const isSpecialtyIdValid = specialty_id => {
+   if (!!!specialty_id) {
+      errorToast('You must select your specialty')
+      return false
+   }
+   if (specialty_id === -1) {
+      errorToast("Seems you don't have specialty to select, please refresh page or go to previous page and try to register again")
+      return false
+   }
+   return true
+}
+
 export const isDoctorFormValid = form => (
    isSurnameValid(form.surname) &&
    isNameValid(form.name) &&
@@ -120,5 +132,6 @@ export const isDoctorFormValid = form => (
    isDiplomaSeriesValid(form.diploma_series) &&
    isSpecialistPhysicianCertificateSeriesValid(form.specialist_physician_certificate_series) &&
    isAccountNameValid(form.accountName) &&
+   isSpecialtyIdValid(form.specialty_id) &&
    form.readInstruction
 )

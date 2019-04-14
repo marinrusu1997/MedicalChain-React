@@ -66,6 +66,7 @@ class RegistrationButton extends React.Component {
       diploma_series: this.props.doctor.diploma_series.trim(),
       specialist_physician_certificate_series: this.props.doctor.specialist_physician_certificate_series.trim(),
       accountName: this.props.doctor.account_name.trim(),
+      specialty_id: this.props.doctor.specialty_id,
       readInstruction: this.props.doctor.readInstruction
    })
 

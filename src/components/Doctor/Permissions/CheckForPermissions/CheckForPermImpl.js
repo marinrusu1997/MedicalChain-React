@@ -1,4 +1,4 @@
-import { eosio_client } from '../../../blockchain/eosio-wallet-client'
+import { eosio_client } from '../../../../blockchain/eosio-wallet-client'
 
 const tryLoadPatientPerms = async (patient, onFail) => {
    try {

@@ -1,7 +1,7 @@
 import React from "react";
-import { PermDetailsForm } from "./PermDetailsForm";
+import { PermDetailsForm } from "../PermDetailsForm/PermDetailsForm";
 import { MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } from 'mdbreact'
-import { validatePermFromForm } from "./PermDetailsFormValidator";
+import { validatePermFromForm } from "../PermDetailsForm/PermDetailsFormValidator";
 
 export class CheckForPermModal extends React.Component {
    constructor(props) {

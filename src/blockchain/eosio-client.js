@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { validationService } from '../remote-api'
+import { server } from '../remote-api'
 import { EOSIOCrypto } from './eosio-crypto'
 import cryptico from 'cryptico'
 import { ObjectDecorator } from '../utils/ObjectDecorator'
@@ -20,17 +20,27 @@ const __makeRequiredKeysObj = async registrationInfo => ({
    encryptionKeys: createEncryptionKeys("" + registrationInfo.ssn + registrationInfo.birthday)
 })
 
-const __makeAccountObj = (accountName, keys) => ({
+const __makeAccountObj = (accountName, keys, specialtyid) => ({
    name: accountName,
    ownerKey: keys.ownerKeys.public,
    activeKey: keys.activeKeys.public,
-   encryptionKey: keys.encryptionKeys.publicEncStr
+   encryptionKey: keys.encryptionKeys.publicEncStr,
+   specialtyid: specialtyid ? specialtyid : -1
 })
 
-const __makeAccountCreationInfoObj = (registrationInfo, accountObj) => ({
-   userInfo: ObjectDecorator.removeProperty(registrationInfo, 'accountName'),
-   accountInfo: accountObj
-})
+const __makeAccountCreationInfoObj = (registrationInfo, accountObj) => {
+   if (registrationInfo.specialty_id) {
+      return {
+         userInfo: ObjectDecorator.removeProperty(ObjectDecorator.removeProperty(registrationInfo, 'accountName'), 'specialty_id'),
+         accountInfo: accountObj
+      }
+   } else {
+      return {
+         userInfo: ObjectDecorator.removeProperty(registrationInfo, 'accountName'),
+         accountInfo: accountObj
+      }
+   }
+}
 
 const __makeAccountRegistrationDetailsObj = (accountObj, keys, tr_receipt) => ({
    isSuccessfull: true,
@@ -59,7 +69,7 @@ const __makeErrorDetailsObj = error => ({
 
 const tryCreateAccount = async (registrationInfo, registrCb, api) => {
    const requiredKeys = await __makeRequiredKeysObj(registrationInfo)
-   const account = __makeAccountObj(registrationInfo.accountName, requiredKeys)
+   const account = __makeAccountObj(registrationInfo.accountName, requiredKeys, registrationInfo.specialty_id)
    const accountCreationInfo = __makeAccountCreationInfoObj(registrationInfo, account)
 
    try {
@@ -76,15 +86,15 @@ const tryCreateAccount = async (registrationInfo, registrCb, api) => {
 
 export const tryCreatePatientAccount = async (registrationInfo, registrCb) => {
    await tryCreateAccount(registrationInfo, registrCb, {
-      method: validationService.validatePatientIdentity.method,
-      url: validationService.validatePatientIdentity.api,
+      method: server.registerPatient.method,
+      url: server.registerPatient.api,
    })
 }
 
 export const tryCreateDoctorAccount = async (registrationInfo, registrCb) => {
    await tryCreateAccount(registrationInfo, registrCb, {
-      method: validationService.validateDoctorIdentity.method,
-      url: validationService.validateDoctorIdentity.api,
+      method: server.registerDoctor.method,
+      url: server.registerDoctor.api,
    })
 }
 

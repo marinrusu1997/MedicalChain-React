@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { errorToast } from '../../Utils/Toasts'
+import { errorToast } from '../../../Utils/Toasts'
 import { MDBBtn } from "mdbreact"
 
 class _CheckForPermBtn extends React.Component {

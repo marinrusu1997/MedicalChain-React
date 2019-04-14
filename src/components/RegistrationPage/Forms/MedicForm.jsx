@@ -3,6 +3,7 @@ import { MDBInput, MDBTooltip } from 'mdbreact'
 import { connect } from 'react-redux'
 import RegistrationButton from '../RegistrationButton'
 import { ReadInstrutionsCBox } from './ReadInstructionCBox'
+import { NomenclatoryDropdown } from '../../Utils/NomenclatoryDropdown'
 import {
    setDoctorName,
    setDoctorSurname,
@@ -11,10 +12,26 @@ import {
    setDoctorDiplomaSeries,
    setDoctorSpecialistCertificateSeries,
    setDoctorAccountName,
+   setDoctorSpecialtyId,
    setReadedInstructions
 } from '../../../store/Registration/Forms/Doctor/actions'
+import { errorToast } from '../../Utils/Toasts';
 
 class MedicForm extends React.Component {
+
+   constructor(props) {
+      super(props)
+      this.specialities = []
+      if (this.props.specialitiesNomenclatory === null) {
+         errorToast("Specialities nomenclatory wasn't loaded, please check for blockchain endpoint connection, refresh the page or go to previous page and try again")
+      } else {
+         this.reversedSpecialitiesNomenclatory = new Map()
+         this.props.specialitiesNomenclatory.forEach((v, k) => this.reversedSpecialitiesNomenclatory.set(v, k))
+         this.reversedSpecialitiesNomenclatory.forEach((id, specialty) => {
+            this.specialities.push(specialty)
+         })
+      }
+   }
 
    submitHandler = event => {
       event.preventDefault()
@@ -49,6 +66,10 @@ class MedicForm extends React.Component {
             break;
          case 'account_name': {
             this.props.setDoctorAccountName(event.target.value)
+         }
+            break;
+         case 'specialty-id': {
+            this.props.setDoctorSpecialtyId(this.reversedSpecialitiesNomenclatory.get(event.target.value))
          }
             break;
          case 'readInstruction': {
@@ -148,11 +169,20 @@ class MedicForm extends React.Component {
                   icon="user-circle"
                   type="text"
                />
-               <ReadInstrutionsCBox
-                  checked={this.props.readInstruction}
-                  input_name="readInstruction"
-                  changeHandler={this.changeHandler}
+               <NomenclatoryDropdown
+                  id="select-specialty-registration"
+                  options={this.specialities}
+                  placeholder="Choose specialty..."
+                  icon={{ className: "", type: "book-reader" }}
+                  onSelection={specialities => this.changeHandler({ target: { name: 'specialty-id', value: specialities[0] } })}
                />
+               <center>
+                  <ReadInstrutionsCBox
+                     checked={this.props.readInstruction}
+                     input_name="readInstruction"
+                     changeHandler={this.changeHandler}
+                  />
+               </center>
             </div>
             <RegistrationButton />
          </form>
@@ -169,7 +199,8 @@ const mapStateToProps = state => {
       diploma_series: state.registration.forms.doctor.diploma_series,
       specialist_physician_certificate_series: state.registration.forms.doctor.specialist_physician_certificate_series,
       account_name: state.registration.forms.doctor.account_name,
-      readInstruction: state.registration.forms.doctor.readInstruction
+      readInstruction: state.registration.forms.doctor.readInstruction,
+      specialitiesNomenclatory: state.blockchain.specialities
    }
 }
 
@@ -181,6 +212,7 @@ const mapDispatchToProps = {
    setDoctorDiplomaSeries,
    setDoctorSpecialistCertificateSeries,
    setDoctorAccountName,
+   setDoctorSpecialtyId,
    setReadedInstructions
 }
 

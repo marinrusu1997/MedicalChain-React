@@ -2,13 +2,13 @@ import React from 'react'
 import {
    MDBCard, MDBCardHeader, MDBCardBody, MDBBtn, MDBDataTable
 } from 'mdbreact'
-import { CheckForPermModal } from "./CheckForPermModal"
-import { PatientAccountButton } from './PatientAccountButton'
-import { CheckForPermBtn } from './CheckForPermBtn'
+import { CheckForPermModal } from "./CheckForPermissions/CheckForPermModal"
+import { PatientAccountButton } from './PatientAccount/PatientAccountButton'
+import { CheckForPermBtn } from './CheckForPermissions/CheckForPermBtn'
 import { table_mapping } from './RequestsTableMapping'
 import { errorToast, succToast } from "../../Utils/Toasts";
 
-import { check_if_has_req_perms } from './CheckForPermImpl'
+import { check_if_has_req_perms } from './CheckForPermissions/CheckForPermImpl'
 
 export class DoctorPermissions extends React.Component {
    constructor(props) {
