@@ -1,5 +1,5 @@
 import React from 'react'
-import { MDBCard, MDBCardBody, MDBInput } from 'mdbreact'
+import { MDBCard, MDBCardBody, MDBInput, MDBTooltip } from 'mdbreact'
 
 import 'react-bootstrap-toggle/dist/bootstrap2-toggle.css'
 import { IntervalInput } from '../../Permission-Commons/IntervalInput';
@@ -54,6 +54,32 @@ export class AddPermForm extends React.Component {
                         icon={{ className: "teal-text", type: "hospital-symbol" }}
                         onSelection={specialties => this.props.onInputChange({ target: { name: 'specialties', value: specialties } })}
                      />
+                     <MDBTooltip
+                        placement="bottom"
+                        tooltipContent="This field needs to be filled only once, when you are adding your first permission. On next permissions you can leave it empty">
+                        <MDBInput
+                           name='decreckey'
+                           onChange={this.props.onInputChange}
+                           label="Records Key"
+                           iconClass="teal-text"
+                           icon="key"
+                           type="password"
+                           required
+                        />
+                     </MDBTooltip>
+                     <MDBTooltip
+                        placement="bottom"
+                        tooltipContent="Enter your encryption key in order to sign your record key. This field must be filled only if you filled Records Key field">
+                        <MDBInput
+                           name='enckey'
+                           onChange={this.props.onInputChange}
+                           label="Encryption Key"
+                           iconClass="teal-text"
+                           icon="key"
+                           type="password"
+                           required
+                        />
+                     </MDBTooltip>
                   </div>
                   {this.props.children}
                </form>

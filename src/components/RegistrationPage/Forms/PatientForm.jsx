@@ -12,6 +12,7 @@ import {
    setPatientIdCardNumber,
    setPatientBirthday,
    setPatientAccountName,
+   setPatientPassword,
    setReadedInstructions
 } from '../../../store/Registration/Forms/Patient/actions'
 
@@ -49,6 +50,10 @@ class PatientForm extends React.Component {
             break;
          case 'accountName': {
             this.props.setPatientAccountName(event.target.value)
+         }
+            break;
+         case 'password': {
+            this.props.setPatientPassword(event.target.value)
          }
             break;
          case 'readInstruction': {
@@ -142,6 +147,20 @@ class PatientForm extends React.Component {
                   icon="user-circle"
                   type="text"
                />
+               <MDBTooltip
+                  placement="bottom"
+                  tooltipContent="This password will be used in order to generate your records encryption key. Remember it!!!">
+                  <MDBInput
+                     value={this.props.password}
+                     name='password'
+                     onChange={this.changeHandler}
+                     required
+                     className="white-text"
+                     label="Your Password"
+                     icon="unlock-alt"
+                     type="text"
+                  />
+               </MDBTooltip>
                <ReadInstrutionsCBox
                   checked={this.props.readInstruction}
                   input_name="readInstruction"
@@ -163,6 +182,7 @@ const mapStateToProps = state => {
       cardNumber: state.registration.forms.patient.cardNumber,
       birthday: state.registration.forms.patient.birthday,
       accountName: state.registration.forms.patient.accountName,
+      password: state.registration.forms.patient.password,
       readInstruction: state.registration.forms.patient.readInstruction
    }
 }
@@ -175,6 +195,7 @@ const mapDispatchToProps = {
    setPatientIdCardNumber,
    setPatientBirthday,
    setPatientAccountName,
+   setPatientPassword,
    setReadedInstructions
 }
 

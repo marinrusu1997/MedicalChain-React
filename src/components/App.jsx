@@ -19,46 +19,51 @@ import {
 import { eosio_client } from '../blockchain/eosio-wallet-client'
 import { errorToast, succToast } from './Utils/Toasts'
 
-import cryptico from 'cryptico'
 import CryptoJS from 'crypto-js'
-
-
-function testEncryptionCryptico() {
-
-  // The passphrase used to repeatably generate this RSA key.
-  var PassPhrase = "The Moon is a Harsh Mistress.";
-
-  // The length of the RSA key, in bits.
-  var Bits = 1024;
-
-  var MattsRSAkey = cryptico.generateRSAKey(PassPhrase, Bits);
-
-  var MattsPublicKeyString = cryptico.publicKeyString(MattsRSAkey);
-
-  let json = MattsRSAkey.toJSON()
-
-  console.log('RSA ', json)
-  console.log('Pub ', MattsPublicKeyString)
-
-  MattsRSAkey.setPrivateEx(json.n, json.e, json.d, json.p, json.q, json.dmp1, json.dmq1, json.coeff)
-
-  var PlainText = "Matt, I need you to help me with my Starcraft strategy.";
-
-  var PassPhrase = "There Ain't No Such Thing As A Free Lunch.";
-
-  var SamsRSAkey = cryptico.generateRSAKey(PassPhrase, 1024);
-
-  var EncryptionResult = cryptico.encrypt(PlainText, MattsPublicKeyString, SamsRSAkey);
-
-  console.log('Encrypted ', EncryptionResult)
-
-  var DecryptionResult = cryptico.decrypt(EncryptionResult.cipher, MattsRSAkey);
-
-  console.log('Decripted ', DecryptionResult)
-}
 
 function md5File() {
   console.log(CryptoJS.SHA256('Hello World!').toString())
+
+}
+
+var message = "Hello World";
+var password = "Secret Password";
+
+const generateKeyForAES = pass => {
+  const salt = CryptoJS.lib.WordArray.random(128 / 8)
+  const key = CryptoJS.PBKDF2(pass, salt, {
+    keySize: 512 / 32,
+    iterations: 1000
+  })
+  return key.toString()
+}
+
+const generateIV = () => {
+  return CryptoJS.lib.WordArray.random(128 / 8)
+}
+
+const AESEncrypt = (msg, key) => {
+  const iv = generateIV()
+  const encrypted = CryptoJS.AES.encrypt(msg, key, {
+    iv: iv
+  })
+  return iv.toString() + encrypted.toString()
+}
+
+const AESDecrypt = (encrypted_packet, key) => {
+  const iv = CryptoJS.enc.Hex.parse(encrypted_packet.substr(0, 32))
+  const msg = encrypted_packet.substr(32)
+  return CryptoJS.AES.decrypt(msg, key, {
+    iv: iv
+  }).toString(CryptoJS.enc.Utf8)
+}
+
+function AES() {
+  const key = generateKeyForAES(password)
+  const encrypted = AESEncrypt(message, key);
+  console.log("Key: ", key.toString())
+  var decrypted = AESDecrypt(encrypted, key);
+  console.log("Decrypted: ", decrypted);
 }
 
 class App extends React.Component {

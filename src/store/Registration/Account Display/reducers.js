@@ -10,7 +10,8 @@ const defaultState = {
       keys: {
          owner: '',
          active: '',
-         encryption: ''
+         encryption: '',
+         records: null,
       },
       transaction: {
          id: '',

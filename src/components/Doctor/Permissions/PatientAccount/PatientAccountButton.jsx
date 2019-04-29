@@ -1,6 +1,8 @@
 import React from 'react'
 import { MDBBtn } from "mdbreact";
 import { PatientAccountFromFullNameModal } from './PatientAccountFromFNameModal';
+import { getPatientAccountsFromFullName } from "../../../../servers/identification";
+import { errorToast } from "../../../Utils/Toasts";
 
 export class PatientAccountButton extends React.Component {
 
@@ -22,14 +24,14 @@ export class PatientAccountButton extends React.Component {
    }
 
    onRequestForPatientAccount = async full_name => {
-      
-      return Promise.resolve([{
-         account: "rusu",
-         birthday: '1997-08-19'
-      },{
-         account: "ioda",
-         birthday: "azaaa"
-      }])
+      let patientAccountsArr = await getPatientAccountsFromFullName(full_name)
+      if (!!!patientAccountsArr) {
+         errorToast("Can't connect to server")
+         patientAccountsArr = []
+      } else if (patientAccountsArr.length === 0) {
+         errorToast('Patients with this name and surname were not registered yet')
+      }
+      return patientAccountsArr
    }
 
    render() {

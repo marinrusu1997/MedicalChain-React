@@ -23,8 +23,8 @@ export class PatientAccountFromFullNameModal extends React.Component {
    }
 
    __getNormalizedPatientFullName = () => ({
-      name: this.patientFullName.name.toUpperCase(),
-      surname: this.patientFullName.surname.toUpperCase()
+      name: this.patientFullName.name.toUpperCase().trim(),
+      surname: this.patientFullName.surname.toUpperCase().trim()
    })
 
    handleTogle = () => {

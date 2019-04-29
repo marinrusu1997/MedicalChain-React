@@ -6,6 +6,7 @@ import {
    PATIENT_ID_CARD_NUMBER_CHANGED,
    PATIENT_BIRTHDAY_CHANGED,
    PATIENT_ACCOUNT_NAME_CHANGED,
+   PATIENT_PASSWORD_CHANGED,
    PATIENT_READ_INSTRUCTIONS_CHANGED,
    RESET_PATIENT_REGISTRATION_FORM
 } from './actions'
@@ -18,6 +19,7 @@ let defaultState = {
    cardNumber: '',
    birthday: new Date().toJSON().slice(0, 10),
    accountName: '',
+   password: '',
    readInstruction: false
 }
 
@@ -57,6 +59,11 @@ export const patientFormReducer = (state = defaultState, action) => {
          return {
             ...state,
             accountName: action.payload
+         }
+      case PATIENT_PASSWORD_CHANGED:
+         return {
+            ...state,
+            password: action.payload
          }
       case PATIENT_READ_INSTRUCTIONS_CHANGED:
          return {

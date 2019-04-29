@@ -7,7 +7,7 @@ import 'react-bootstrap-toggle/dist/bootstrap2-toggle.css'
 import '../../../css/buttons.css'
 
 import { eosio_client } from '../../../blockchain/eosio-wallet-client'
-import { getDoctorFullNamesFromAccs } from '../../../server'
+import { getDoctorFullNamesFromAccs } from '../../../servers/identification'
 import { errorToast, succToast, infoToast } from '../../Utils/Toasts'
 import { PermissionModal } from './PermissionModal'
 import { ConfirmationModal } from '../../Utils/ConfirmationModal'
@@ -94,7 +94,7 @@ class _PatientPermissions extends React.Component {
       this.toggleMap = new Map()
       this.permIdsCheduledForChanging = []
       this.specialtiesDelimiter = ", "
-      this.onToggleCallback = (() => this.perm_modal_header_msg = null).bind(this)
+      this.onToggleCallback = () => this.perm_modal_header_msg = null
       this.fullNameDoctorsAccsMap = null
    }
 
@@ -103,6 +103,8 @@ class _PatientPermissions extends React.Component {
    }
 
    __retrieveDoctorName = account => {
+      if (this.fullNameDoctorsAccsMap === null)
+         return "Server is down, se we can't provide doctor full name"
       if (this.fullNameDoctorsAccsMap.size === 0)
          return "Server is down, se we can't provide doctor full name"
       const full_name = this.fullNameDoctorsAccsMap.get(account)
@@ -204,8 +206,8 @@ class _PatientPermissions extends React.Component {
    }
 
    __resolveDoctorNameForLastAddedPerm = async doctor => {
-      if (!!!this.fullNameDoctorsAccsMap.has(doctor)) {
-         this.fullNameDoctorsAccsMap.set(await getDoctorFullNamesFromAccs([doctor]).get(doctor))
+      if (this.fullNameDoctorsAccsMap !== null && !!!this.fullNameDoctorsAccsMap.has(doctor)) {
+         this.fullNameDoctorsAccsMap.set((await getDoctorFullNamesFromAccs([doctor])).get(doctor))
       }
    }
 
@@ -234,7 +236,7 @@ class _PatientPermissions extends React.Component {
          this.setState({ table: { columns: table_mapping.columns, rows: [...this.state.table.rows, permRow] } })
       } catch (e) {
          console.error(e)
-         errorToast('Error retrieving perms from blockchain' + ' : ' + e.message)
+         errorToast('Error retrieving perms from blockchain : ' + e.message)
       }
    }
 
@@ -333,12 +335,11 @@ class _PatientPermissions extends React.Component {
    }
 
    _preparedAddHandlerForModal = perm => {
-      eosio_client.add_permission
-         (
-            perm,
-            this._onAddPermSuccess(perm.doctor),
-            err_msg => errorToast(err_msg)
-         )
+      eosio_client.add_permission(
+         perm,
+         this._onAddPermSuccess(perm.doctor),
+         err_msg => errorToast(err_msg)
+      )
    }
 
    addPermHandler = () => {
@@ -349,7 +350,7 @@ class _PatientPermissions extends React.Component {
    }
 
    _tryGetPermisionRowForUpdating = () => {
-      if (this.permIdsCheduledForChanging.length == 0) {
+      if (this.permIdsCheduledForChanging.length === 0) {
          infoToast(messageWhenNoSelections)
          return null
       }
@@ -424,12 +425,11 @@ class _PatientPermissions extends React.Component {
 
    _preparedUpdateHandlerForModal = unmodified => modified => {
       const permInfo = { ...unmodified, ...modified }
-      eosio_client.updt_permission
-         (
-            permInfo,
-            this._onUpdatePermSuccess(permInfo),
-            err_msg => errorToast(err_msg)
-         )
+      eosio_client.updt_permission(
+         permInfo,
+         this._onUpdatePermSuccess(permInfo),
+         err_msg => errorToast(err_msg)
+      )
    }
 
    updatePermHandler = () => {

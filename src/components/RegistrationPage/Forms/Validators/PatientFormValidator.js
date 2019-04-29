@@ -111,9 +111,18 @@ const isAccountNameValid = accountName => {
    return true
 }
 
+const isPasswordValid = pass => {
+   if (pass.length < 10) {
+      errorToast('Password must be at least 10 caracters')
+      return false
+   }
+   return true
+}
+
 export const isPatientFormValid = form => {
    return isSurnameValid(form.surname) && isNameValid(form.name) &&
       isGenderValid(form.gender) && isSsnValid(form.ssn) &&
       isIDCardNumberValid(form.cardNumber) && isBirthdayValid(form.birthday) &&
-      isAccountNameValid(form.accountName) && form.readInstruction
+      isAccountNameValid(form.accountName) && isPasswordValid(form.password) &&
+      form.readInstruction
 }

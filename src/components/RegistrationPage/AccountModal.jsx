@@ -33,7 +33,7 @@ class AccountModal extends React.Component {
    render() {
       return (
          <MDBContainer>
-            <MDBModal isOpen={this.props.showDetails} toggle={this.toggle} cascading size="lg">
+            <MDBModal isOpen={this.props.showDetails} cascading size="lg">
                <MDBModalHeader
                   toggle={this.toggle}
                   titleClass="d-inline title"
@@ -64,9 +64,17 @@ class AccountModal extends React.Component {
                         <MDBIcon icon="key" /><font color="blue">&nbsp;&nbsp;Active Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
                         <font color="black">{this.props.accountDetails.keys.active}</font>
                      </MDBListGroupItem>
+                     {
+                        this.props.accountDetails.keys.records &&
+                        <MDBListGroupItem>
+                           <MDBIcon icon="key" /><font color="blue">&nbsp;&nbsp;Records Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                           <CopyToClipboard text={this.props.accountDetails.keys.records}>
+                              <button type="button" className="btn btn-outline-danger btn-sm">Copy</button>
+                           </CopyToClipboard>
+                        </MDBListGroupItem>
+                     }
                      <MDBListGroupItem>
-                        <MDBIcon icon="key" />
-                        <font color="blue">&nbsp;&nbsp;Encryption Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                        <MDBIcon icon="key" /><font color="blue">&nbsp;&nbsp;Encryption Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
                         <CopyToClipboard text={this.props.accountDetails.keys.encryption}>
                            <button type="button" className="btn btn-outline-danger btn-sm">Copy</button>
                         </CopyToClipboard>

@@ -65,6 +65,16 @@ export const validateEndTime = perm => {
    return true
 }
 
+export const validateIntervalValidity = perm => {
+   const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
+   const stopTime = (Date.parse(perm.stop) / 1000).toFixed(0)
+   if (stopTime < startTime) {
+      errorToast('End time must be greather than start time')
+      return false
+   }
+   return true
+}
+
 export const validateTimeIsInCorrectInterval = perm => {
    const startTime = (Date.parse(perm.start) / 1000).toFixed(0)
    const stopTime = (Date.parse(perm.stop) / 1000).toFixed(0)
@@ -112,14 +122,22 @@ export const validateRight = right => {
 
 export const tryValidateLimitedInterval = perm => {
    if (perm.interval === "LIMITED") {
-      if (!!!validateStartTime(perm))
-         return false
-      if (!!!validateEndTime(perm))
-         return false
-      return true
+      /*     if (!!!validateStartTime(perm))
+              return false
+           if (!!!validateEndTime(perm))
+              return false */
+      return validateIntervalValidity(perm)
    } else if (perm.interval === 'INFINITE') {
       return true
    }
+}
+
+export const validateKeysMatch = perm => {
+   if (perm.decreckey !== "" && perm.enckey === "") {
+      errorToast("You must prompt your Encryption Key in order to sign Records Key")
+      return false
+   }
+   return true
 }
 
 export const validateForAdding = perm => {
@@ -131,9 +149,11 @@ export const validateForAdding = perm => {
       return false
    if (!!!validateRight(perm.right))
       return false
-   if (!!!validateTimeIsInCorrectInterval(perm))
-      return false
+   /*  if (!!!validateTimeIsInCorrectInterval(perm))
+        return false */
    if (!!!tryValidateLimitedInterval(perm))
+      return false
+   if (!!!validateKeysMatch(perm))
       return false
    return true
 }
@@ -163,8 +183,8 @@ export const validateForUpdating = perm => {
       return false
    if (!!!validateSpecialties(perm.specialties))
       return false
-   if (!!!validateTimeIsInCorrectInterval(perm))
-      return false
+   /*   if (!!!validateTimeIsInCorrectInterval(perm))
+         return false */
    if (!!!tryValidateLimitedInterval(perm))
       return false
    return true

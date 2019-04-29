@@ -8,6 +8,7 @@ import {
    USER_TYPE_RESEARCHER
 } from '../../store/App/actions'
 import { resetPatientRegistrationForm } from '../../store/Registration/Forms/Patient/actions'
+import { resetDoctorRegistrationForm } from "../../store/Registration/Forms/Doctor/actions";
 
 class BackToMainButton extends React.Component {
 
@@ -16,6 +17,10 @@ class BackToMainButton extends React.Component {
       switch (this.props.currentUserType) {
          case USER_TYPE_PATIENT: {
             this.props.resetPatientRegistrationForm()
+         }
+            break;
+         case USER_TYPE_MEDIC: {
+            this.props.resetDoctorRegistrationForm()
          }
             break;
       }
@@ -38,7 +43,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
    unselectCurrentUserType,
-   resetPatientRegistrationForm
+   resetPatientRegistrationForm,
+   resetDoctorRegistrationForm
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BackToMainButton)

@@ -1,23 +1,13 @@
 import axios from 'axios'
 import { server } from '../remote-api'
-import { EOSIOCrypto } from './eosio-crypto'
-import cryptico from 'cryptico'
+import { Crypto } from './eosio-crypto'
 import { ObjectDecorator } from '../utils/ObjectDecorator'
 
-const createEncryptionKeys = passphrase => {
-   const Bits = 1024
-   const RSAKey = cryptico.generateRSAKey(passphrase, Bits)
-   const PubKeyString = cryptico.publicKeyString(RSAKey)
-   return {
-      privRSAJSON: JSON.stringify(RSAKey.toJSON(), null, 2),
-      publicEncStr: PubKeyString
-   }
-}
-
 const __makeRequiredKeysObj = async registrationInfo => ({
-   ownerKeys: await EOSIOCrypto.makeKeys(),
-   activeKeys: await EOSIOCrypto.makeKeys(),
-   encryptionKeys: createEncryptionKeys("" + registrationInfo.ssn + registrationInfo.birthday)
+   ownerKeys: await Crypto.makeEOSIO_ECDSA_Keys(),
+   activeKeys: await Crypto.makeECDSAKeys(),
+   encryptionKeys: Crypto.makeRSAKeys(registrationInfo.ssn +
+      (registrationInfo.birthday ? registrationInfo.birthday : registrationInfo.unique_identification_code))
 })
 
 const __makeAccountObj = (accountName, keys, specialtyid) => ({
@@ -36,20 +26,21 @@ const __makeAccountCreationInfoObj = (registrationInfo, accountObj) => {
       }
    } else {
       return {
-         userInfo: ObjectDecorator.removeProperty(registrationInfo, 'accountName'),
+         userInfo: ObjectDecorator.removeProperty(ObjectDecorator.removeProperty(registrationInfo, 'accountName'), 'password'),
          accountInfo: accountObj
       }
    }
 }
 
-const __makeAccountRegistrationDetailsObj = (accountObj, keys, tr_receipt) => ({
+const __makeAccountRegistrationDetailsObj = (accountObj, keys, password, tr_receipt) => ({
    isSuccessfull: true,
    accountDetails: {
       name: accountObj.name,
       keys: {
          owner: keys.ownerKeys.private,
          active: keys.activeKeys.private,
-         encryption: keys.encryptionKeys.privRSAJSON
+         encryption: keys.encryptionKeys.privRSAJSON,
+         records: password ? Crypto.makeAESKey(password) : null
       },
       transaction: {
          id: tr_receipt.transaction_id,
@@ -70,6 +61,7 @@ const __makeErrorDetailsObj = error => ({
 const tryCreateAccount = async (registrationInfo, registrCb, api) => {
    const requiredKeys = await __makeRequiredKeysObj(registrationInfo)
    const account = __makeAccountObj(registrationInfo.accountName, requiredKeys, registrationInfo.specialty_id)
+   const password = registrationInfo.password
    const accountCreationInfo = __makeAccountCreationInfoObj(registrationInfo, account)
 
    try {
@@ -77,7 +69,7 @@ const tryCreateAccount = async (registrationInfo, registrCb, api) => {
          ...api,
          data: accountCreationInfo
       })
-      registrCb(__makeAccountRegistrationDetailsObj(account, requiredKeys, res.data))
+      registrCb(__makeAccountRegistrationDetailsObj(account, requiredKeys, password, res.data))
    } catch (e) {
       console.error(e)
       registrCb(__makeErrorDetailsObj(e))

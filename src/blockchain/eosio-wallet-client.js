@@ -1,6 +1,7 @@
 import { Api, JsonRpc, RpcError } from "eosjs"
 import ScatterJS from "scatterjs-core"
 import ScatterEOS from "scatterjs-plugin-eosjs2"
+import { Crypto } from "./eosio-crypto";
 
 import { rightsBchainTableLoaded, specialitiesBchainTableLoaded } from '../store/Blockchain/actions'
 import { store } from '../store'
@@ -12,7 +13,7 @@ const requiredFields = {
 }
 
 const medicalContract = {
-   account: 'medical5',
+   account: 'medical',
    actions: {
       addperm: 'addperm',
       updtperm: 'updtperm',
@@ -22,7 +23,9 @@ const medicalContract = {
       rights: { name: 'rights', limit: 1 },
       specialities: { name: 'specialities', limit: 1 },
       patients: { name: 'patients', limit: 1 },
-      permissions: { name: 'permissions', limit: 10 }
+      doctors: { name: 'doctors', limit: 1 },
+      permissions: { name: 'permissions', limit: 10 },
+      records: { name: 'records', limit: 1 }
    }
 }
 
@@ -199,6 +202,11 @@ class EOSIOWalletClient {
       })
    }
 
+   doctors = async account => {
+      const { name, limit } = medicalContract.tables.doctors
+      return await this._table(name, account, limit)
+   }
+
    _transaction = (action, data) => {
       return this.eos.transact(
          {
@@ -231,6 +239,15 @@ class EOSIOWalletClient {
             onErr('Failed push transaction : Not connected to wallet')
             return
          }
+         let encrypted_patient_decreckey = perm.decreckey
+         if (perm.decreckey !== "") {
+            const doctor_table = await this.doctors(perm.doctor)
+            if (doctor_table.rows.length === 0) {
+               onErr('This is not a doctor account')
+               return
+            }
+            encrypted_patient_decreckey = Crypto.encryptWithRSA(perm.decreckey, doctor_table.rows[0].pubenckey, perm.enckey)
+         }
          onSucc(await this._transaction(medicalContract.actions.addperm, {
             perm: {
                patient: this.account.name,
@@ -241,7 +258,8 @@ class EOSIOWalletClient {
             interval: {
                from: perm.from,
                to: perm.to
-            }
+            },
+            decreckey: encrypted_patient_decreckey
          }))
       } catch (e) {
          console.error(e)

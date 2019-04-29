@@ -13,9 +13,8 @@ import { TransactionReceipt } from '../../Modals/TransactionReceipt'
 export class PermissionModal extends React.Component {
    constructor(props) {
       super(props)
-      this.permFromForm = {
-         interval: 'LIMITED'
-      }
+      this.permFromForm = null
+      this.__resetPermFromForm()
       this.state = {
          modalSize: "nm",
          isTrInfoVisible: false
@@ -36,16 +35,20 @@ export class PermissionModal extends React.Component {
 
    __resetPermFromForm = () => {
       this.permFromForm = {
-         interval: 'LIMITED'
+         interval: 'LIMITED',
+         decreckey: "",
+         enckey: ""
       }
    }
 
-   _getNormalizedPerm = () => ({
+   _getNormalizedAddingPerm = () => ({
       doctor: this.permFromForm.doctor,
       specialtyids: this.permFromForm.specialties.map(specialty => this.props.permNomenclatories.specialitiesNomenclatory.get(specialty)),
       rightid: this.props.permNomenclatories.rightsNomenclatory.get(this.permFromForm.right),
       from: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.start) / 1000).toFixed(0) : 0,
-      to: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.stop) / 1000).toFixed(0) : 0
+      to: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.stop) / 1000).toFixed(0) : 0,
+      decreckey: this.permFromForm.decreckey,
+      enckey: this.permFromForm.enckey
    })
 
    _getNormalizedUpdatedPerm = () => ({
@@ -61,7 +64,7 @@ export class PermissionModal extends React.Component {
             this.props.onUpsert(this._getNormalizedUpdatedPerm())
          }
       } else if (validateForAdding(this.permFromForm)) {
-         this.props.onUpsert(this._getNormalizedPerm())
+         this.props.onUpsert(this._getNormalizedAddingPerm())
       }
    }
 

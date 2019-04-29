@@ -55,6 +55,7 @@ class RegistrationButton extends React.Component {
       cardNumber: this.props.patient.cardNumber.trim(),
       birthday: this.props.patient.birthday,
       accountName: this.props.patient.accountName.trim(),
+      password: this.props.patient.password.trim(),
       readInstruction: this.props.patient.readInstruction
    })
 

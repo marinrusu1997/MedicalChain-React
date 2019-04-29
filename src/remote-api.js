@@ -11,5 +11,33 @@ export const server = {
    doctorNamesFromAcc: {
       method: 'post',
       api: '/doctor/full-names'
+   },
+   patientAccFromFullName: {
+      method: 'post',
+      api: '/patient/acc-from-full-name'
+   }
+}
+
+export const wallet = {
+   baseUrl: 'http://localhost:6080',
+   store: {
+      encryption: {
+         method: 'post',
+         api: '/store/encryption'
+      },
+      records: {
+         method: 'post',
+         api: '/store/records'
+      }
+   },
+   retrieve: {
+      encryption: {
+         method: 'post',
+         api: '/retrieve/encryption'
+      },
+      records: {
+         method: 'post',
+         api: '/retrieve/records'
+      }
    }
 }
