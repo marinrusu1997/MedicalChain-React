@@ -11,6 +11,10 @@ const getRSAPrivKeyFromJSONStr = json_str => {
    return RSAPrivKey
 }
 
+const throwAESDecrypt = () => {
+   throw new Error('Failed to AES decrypt')
+}
+
 export class Crypto {
 
    static makeEOSIO_ECDSA_Keys = async () => {
@@ -49,7 +53,7 @@ export class Crypto {
       const senderRSAPrivKey = getRSAPrivKeyFromJSONStr(sender_priv_key_json_str)
       const EncryptionResult = cryptico.encrypt(msg, recipient_pub_key_str, senderRSAPrivKey)
       if (EncryptionResult.status !== "success") {
-         throw new Error('Failed to encrypt')
+         throw new Error('Failed to RSA encrypt')
       }
       return EncryptionResult.cipher
    }
@@ -58,11 +62,31 @@ export class Crypto {
       const recipientRSAPrivKey = getRSAPrivKeyFromJSONStr(recipient_priv_key_json_str)
       const DecryptionResult = cryptico.decrypt(msg, recipientRSAPrivKey)
       if (DecryptionResult.status !== 'success') {
-         throw new Error('Failed to decrypt')
+         throw new Error('Failed to RSA decrypt')
       }
       if (DecryptionResult.signature !== 'verified') {
-         throw new Error('Unverified signature')
+         throw new Error('Unverified RSA signature')
       }
       return DecryptionResult.plaintext
+   }
+
+   static encryptAESWithPassword = (msg, password) => {
+      const encrypted = CryptoJS.AES.encrypt(msg, password).toString()
+      if (encrypted.length === 0)
+         throw new Error('Failed to AES encrypt')
+      return encrypted
+   }
+
+   static decryptAESWithPassword = (msg, password) => {
+      try {
+         const decrypted = CryptoJS.AES.decrypt(msg, password).toString(CryptoJS.enc.Utf8)
+         if (decrypted.length === 0) {
+            throwAESDecrypt()
+         }
+         return decrypted
+      } catch (e) {
+         console.error(e)
+         throwAESDecrypt()
+      }
    }
 }

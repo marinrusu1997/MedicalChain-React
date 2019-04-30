@@ -13,9 +13,11 @@ import {
    setDoctorSpecialistCertificateSeries,
    setDoctorAccountName,
    setDoctorSpecialtyId,
+   setDoctorPassword,
    setReadedInstructions
 } from '../../../store/Registration/Forms/Doctor/actions'
 import { errorToast } from '../../Utils/Toasts';
+import { PasswordInput } from '../../Utils/PasswordInput';
 
 class MedicForm extends React.Component {
 
@@ -70,6 +72,10 @@ class MedicForm extends React.Component {
             break;
          case 'specialty-id': {
             this.props.setDoctorSpecialtyId(this.reversedSpecialitiesNomenclatory.get(event.target.value))
+         }
+            break;
+         case 'password': {
+            this.props.setDoctorPassword(event.target.value)
          }
             break;
          case 'readInstruction': {
@@ -159,6 +165,13 @@ class MedicForm extends React.Component {
                      type="text"
                   />
                </MDBTooltip>
+               <NomenclatoryDropdown
+                  id="select-specialty-registration"
+                  options={this.specialities}
+                  placeholder="Choose specialty..."
+                  icon={{ className: "", type: "book-reader" }}
+                  onSelection={specialities => this.changeHandler({ target: { name: 'specialty-id', value: specialities[0] } })}
+               />
                <MDBInput
                   value={this.props.account_name}
                   name='account_name'
@@ -169,12 +182,10 @@ class MedicForm extends React.Component {
                   icon="user-circle"
                   type="text"
                />
-               <NomenclatoryDropdown
-                  id="select-specialty-registration"
-                  options={this.specialities}
-                  placeholder="Choose specialty..."
-                  icon={{ className: "", type: "book-reader" }}
-                  onSelection={specialities => this.changeHandler({ target: { name: 'specialty-id', value: specialities[0] } })}
+               <PasswordInput 
+                  tooltip={"This password will be used in order to encrypt your private encryption key and store into wallet. Remember it!!!"}
+                  password={this.props.password}
+                  onChange={this.changeHandler}
                />
                <center>
                   <ReadInstrutionsCBox
@@ -200,7 +211,8 @@ const mapStateToProps = state => {
       specialist_physician_certificate_series: state.registration.forms.doctor.specialist_physician_certificate_series,
       account_name: state.registration.forms.doctor.account_name,
       readInstruction: state.registration.forms.doctor.readInstruction,
-      specialitiesNomenclatory: state.blockchain.specialities
+      specialitiesNomenclatory: state.blockchain.specialities,
+      password: state.registration.forms.doctor.password
    }
 }
 
@@ -213,6 +225,7 @@ const mapDispatchToProps = {
    setDoctorSpecialistCertificateSeries,
    setDoctorAccountName,
    setDoctorSpecialtyId,
+   setDoctorPassword,
    setReadedInstructions
 }
 

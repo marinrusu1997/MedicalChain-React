@@ -6,6 +6,7 @@ export const DOCTOR_DIPLOMA_SERIES_CHANGED = 'DOCTOR_DIPLOMA_SERIES_CHANGED'
 export const DOCTOR_SPECIALIST_CERTIFICATE_SERIES_CHANGED = 'DOCTOR_SPECIALIST_CERTIFICATE_SERIES_CHANGED'
 export const DOCTOR_ACCOUNT_NAME_CHANGED = 'DOCTOR_ACCOUNT_NAME_CHANGED'
 export const DOCTOR_SPECIALTY_ID_CHANGED = 'DOCTOR_SPECIALTY_ID_CHANGED'
+export const DOCTOR_PASSWORD_CHANGED = 'DOCTOR_PASSWORD_CHANGED'
 export const DOCTOR_READ_INSTRUCTIONS_CHANGED = 'DOCTOR_READ_INSTRUCTIONS_CHANGED'
 export const RESET_DOCTOR_REGISTRATION_FORM = 'RESET_DOCTOR_REGISTRATION_FORM'
 
@@ -59,6 +60,11 @@ export const setDoctorAccountName = account => ({
 export const setDoctorSpecialtyId = specialty_id => ({
    type: DOCTOR_SPECIALTY_ID_CHANGED,
    payload: specialty_id
+})
+
+export const setDoctorPassword = password => ({
+   type: DOCTOR_PASSWORD_CHANGED,
+   payload: password
 })
 
 export const setReadedInstructions = hasReaded => {

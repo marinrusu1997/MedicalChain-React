@@ -112,17 +112,33 @@ const isAccountNameValid = accountName => {
 }
 
 const isPasswordValid = pass => {
-   if (pass.length < 10) {
-      errorToast('Password must be at least 10 caracters')
+   const validated =
+      /[A-Z]/.test(pass) &&
+      /[a-z]/.test(pass) &&
+      /[0-9]/.test(pass) &&
+      /[^A-Za-z0-9]/.test(pass) &&
+      pass.length >= 10
+   const err_msg = 'Password should contain \n' + 
+                  '1.At least one uppercase letter\n' +
+                  '2.At least one lowercase letter\n' +
+                  '3.At least one digit\n' + 
+                  '4.At least one special symbol\n' + 
+                  '5.Should be more than 10 character'
+   if (!!!validated) {
+      errorToast(err_msg)
       return false
    }
    return true
 }
 
-export const isPatientFormValid = form => {
-   return isSurnameValid(form.surname) && isNameValid(form.name) &&
-      isGenderValid(form.gender) && isSsnValid(form.ssn) &&
-      isIDCardNumberValid(form.cardNumber) && isBirthdayValid(form.birthday) &&
-      isAccountNameValid(form.accountName) && isPasswordValid(form.password) &&
-      form.readInstruction
-}
+export const isPatientFormValid = form => (
+   isSurnameValid(form.surname) &&
+   isNameValid(form.name) &&
+   isGenderValid(form.gender) &&
+   isSsnValid(form.ssn) &&
+   isIDCardNumberValid(form.cardNumber) &&
+   isBirthdayValid(form.birthday) &&
+   isAccountNameValid(form.accountName) &&
+   isPasswordValid(form.password) &&
+   form.readInstruction
+)

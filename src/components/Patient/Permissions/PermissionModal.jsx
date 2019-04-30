@@ -10,6 +10,12 @@ import { UpdatePermForm } from './UpdatePermForm'
 import { validateForAdding, validateForUpdating } from '../../Permission-Commons/PermValidator'
 import { TransactionReceipt } from '../../Modals/TransactionReceipt'
 
+import { eosio_client } from "../../../blockchain/eosio-wallet-client"
+import { Crypto } from "../../../blockchain/eosio-crypto"
+import { retrieveEncryptionKey, retrieveRecordsKey } from "../../../servers/wallet"
+
+import { errorToast } from "../../Utils/Toasts";
+
 export class PermissionModal extends React.Component {
    constructor(props) {
       super(props)
@@ -35,9 +41,37 @@ export class PermissionModal extends React.Component {
 
    __resetPermFromForm = () => {
       this.permFromForm = {
-         interval: 'LIMITED',
-         decreckey: "",
-         enckey: ""
+         interval: 'LIMITED'
+      }
+      this.__resetPermFromFormKeys()
+   }
+
+   __resetPermFromFormPassword = () => {
+      this.permFromForm.password = null
+   }
+
+   __resetPermFromFormKeys = () => {
+      this.permFromForm.decreckey = ""
+      this.permFromForm.enckey = ""
+   }
+
+   __isRecordsKeyEmpty = () => {
+      return this.permFromForm.decreckey === ""
+   }
+
+   __checkIfKeysNeedToBeLoadedFromWallet = async () => {
+      if (this.permFromForm.password && this.permFromForm.password.length !== 0 && this.__isRecordsKeyEmpty()) {
+         const recordsKeyFromWallet = await retrieveRecordsKey(eosio_client.getAccountName())
+         if (!!!recordsKeyFromWallet) {
+            throw new Error("Can't load records key.Please input keys manually")
+         }
+         const encryptionKeyFromWallet = await retrieveEncryptionKey(eosio_client.getAccountName())
+         if (!!!encryptionKeyFromWallet) {
+            throw new Error("Can't load encryption key.Please input keys manually")
+         }
+         this.permFromForm.decreckey = Crypto.decryptAESWithPassword(recordsKeyFromWallet, this.permFromForm.password)
+         this.permFromForm.enckey = Crypto.decryptAESWithPassword(encryptionKeyFromWallet, this.permFromForm.password)
+         this.__resetPermFromFormPassword()
       }
    }
 
@@ -58,13 +92,20 @@ export class PermissionModal extends React.Component {
       to: this.permFromForm.interval === "LIMITED" ? (Date.parse(this.permFromForm.stop) / 1000).toFixed(0) : 0
    })
 
-   handleUpsert = () => {
-      if (!!!this.props.isAddingModal) {
-         if (validateForUpdating(this.permFromForm)) {
-            this.props.onUpsert(this._getNormalizedUpdatedPerm())
+   handleUpsert = async () => {
+      try {
+         if (!!!this.props.isAddingModal) {
+            if (validateForUpdating(this.permFromForm)) {               
+               this.props.onUpsert(this._getNormalizedUpdatedPerm())
+            }
+         } else if (validateForAdding(this.permFromForm)) {
+            await this.__checkIfKeysNeedToBeLoadedFromWallet()
+            this.props.onUpsert(this._getNormalizedAddingPerm())
+            this.__resetPermFromFormKeys()
          }
-      } else if (validateForAdding(this.permFromForm)) {
-         this.props.onUpsert(this._getNormalizedAddingPerm())
+      } catch (e) {
+         console.error(e)
+         errorToast(e.message)
       }
    }
 
@@ -108,7 +149,9 @@ export class PermissionModal extends React.Component {
             <MDBModalBody>
                {this.props.header_msg}
                {this.props.isAddingModal &&
-                  <AddPermForm permNomenclatories={this.props.permNomenclatories} onInputChange={this.handleInputChange} >
+                  <AddPermForm
+                     permNomenclatories={this.props.permNomenclatories}
+                     onInputChange={this.handleInputChange}>
                      <div className="text-center">
                         <button className="btn btn-info" onClick={this.handleUpsert}>
                            Add

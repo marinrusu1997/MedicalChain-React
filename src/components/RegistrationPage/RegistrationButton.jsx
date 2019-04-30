@@ -14,20 +14,47 @@ import {
 import { accountCreatedSuccessfullyAction } from '../../store/Registration/Account Display/actions'
 import '../../css/buttons.css'
 import { tryCreatePatientAccount, tryCreateDoctorAccount } from '../../blockchain/eosio-client'
-import { errorToast } from '../Utils/Toasts'
+import { errorToast, succToast } from '../Utils/Toasts'
 import { ObjectDecorator } from '../../utils/ObjectDecorator'
 import { resetDoctorRegistrationForm } from '../../store/Registration/Forms/Doctor/actions'
 import { resetPatientRegistrationForm } from '../../store/Registration/Forms/Patient/actions'
 
+import { Crypto } from "../../blockchain/eosio-crypto"
+import { storeEncryptionKey, storeRecordsKey } from "../../servers/wallet";
+
 class RegistrationButton extends React.Component {
+
+   storeKeysIntoNodeWallet = async (password, keys, account) => {
+      let success = false
+      try {
+         if (!!!(await storeEncryptionKey(account, Crypto.encryptAESWithPassword(keys.encryption, password)))) {
+            throw new Error('Failed to store encryption key into wallet')
+         }
+         if (keys.records) {
+            if (!!!(await storeRecordsKey(account, Crypto.encryptAESWithPassword(keys.records, password)))) {
+               throw new Error('Failed to store records key into wallet')
+            }
+         }
+         success = true
+      } catch (e) {
+         console.error(e)
+      }
+      return Promise.resolve(success)
+   }
 
    handlePatientRegistration = registrationInfo => {
       this.props.accountCreationRequestSent()
-      tryCreatePatientAccount(registrationInfo, creation => {
+      const password = registrationInfo.password
+      tryCreatePatientAccount(registrationInfo, async creation => {
          this.props.accountCreationResponseReady()
          if (!!!creation.isSuccessfull) {
             errorToast(creation.msg)
          } else {
+            if (!!!(await this.storeKeysIntoNodeWallet(password, creation.accountDetails.keys, creation.accountDetails.name))) {
+               errorToast('Failed to store your encryption/records key into wallet, you must store them manually from your home page')
+            } else {
+               succToast('Your encryption/records were stored successfully into wallet')
+            }
             this.props.accountCreatedSuccessfullyAction(creation.accountDetails)
             this.props.resetPatientRegistrationForm()
          }
@@ -36,11 +63,17 @@ class RegistrationButton extends React.Component {
 
    handleDoctorRegistration = registrationInfo => {
       this.props.accountCreationRequestSent()
-      tryCreateDoctorAccount(registrationInfo, creation => {
+      const password = registrationInfo.password
+      tryCreateDoctorAccount(registrationInfo, async creation => {
          this.props.accountCreationResponseReady()
          if (!!!creation.isSuccessfull) {
             errorToast(creation.msg)
          } else {
+            if (!!!(await this.storeKeysIntoNodeWallet(password, creation.accountDetails.keys, creation.accountDetails.name))) {
+               errorToast('Failed to store your encryption/records key into wallet, you must store them manually from your home page')
+            } else {
+               succToast('Your encryption/records were stored successfully into wallet')
+            }
             this.props.accountCreatedSuccessfullyAction(creation.accountDetails)
             this.props.resetDoctorRegistrationForm()
          }
@@ -68,6 +101,7 @@ class RegistrationButton extends React.Component {
       specialist_physician_certificate_series: this.props.doctor.specialist_physician_certificate_series.trim(),
       accountName: this.props.doctor.account_name.trim(),
       specialty_id: this.props.doctor.specialty_id,
+      password: this.props.doctor.password.trim(),
       readInstruction: this.props.doctor.readInstruction
    })
 

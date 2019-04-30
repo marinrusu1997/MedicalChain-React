@@ -5,6 +5,7 @@ import {
    MDBCol,
    MDBView,
    MDBMask,
+   MDBScrollbar,
    ToastContainer
 } from "mdbreact"
 import AccountModal from "./AccountModal"
@@ -39,7 +40,9 @@ export class Registration extends React.Component {
                      <MDBRow>
                         <MDBCol md="4" />
                         <MDBCol md="4">
-                           <SignUpHeader />
+                           {this.props.userType === USER_TYPE_PATIENT &&
+                              <SignUpHeader />
+                           }
                            {this.props.userType === USER_TYPE_PATIENT &&
                               <PatientForm />}
                            {this.props.userType === USER_TYPE_MEDIC &&

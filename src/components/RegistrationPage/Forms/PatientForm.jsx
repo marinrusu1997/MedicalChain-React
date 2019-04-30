@@ -15,6 +15,7 @@ import {
    setPatientPassword,
    setReadedInstructions
 } from '../../../store/Registration/Forms/Patient/actions'
+import { PasswordInput } from '../../Utils/PasswordInput';
 
 class PatientForm extends React.Component {
    submitHandler = event => {
@@ -147,20 +148,11 @@ class PatientForm extends React.Component {
                   icon="user-circle"
                   type="text"
                />
-               <MDBTooltip
-                  placement="bottom"
-                  tooltipContent="This password will be used in order to generate your records encryption key. Remember it!!!">
-                  <MDBInput
-                     value={this.props.password}
-                     name='password'
-                     onChange={this.changeHandler}
-                     required
-                     className="white-text"
-                     label="Your Password"
-                     icon="unlock-alt"
-                     type="text"
-                  />
-               </MDBTooltip>
+               <PasswordInput
+                  tooltip={"This password will be used in order to encrypt your private encryption key and store into wallet. Remember it!!!"}
+                  password={this.props.password}
+                  onChange={this.changeHandler}
+               />
                <ReadInstrutionsCBox
                   checked={this.props.readInstruction}
                   input_name="readInstruction"

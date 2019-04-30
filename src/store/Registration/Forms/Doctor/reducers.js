@@ -7,6 +7,7 @@ import {
    DOCTOR_SPECIALIST_CERTIFICATE_SERIES_CHANGED,
    DOCTOR_ACCOUNT_NAME_CHANGED,
    DOCTOR_SPECIALTY_ID_CHANGED,
+   DOCTOR_PASSWORD_CHANGED,
    DOCTOR_READ_INSTRUCTIONS_CHANGED,
    RESET_DOCTOR_REGISTRATION_FORM
 } from './actions'
@@ -20,6 +21,7 @@ let defaultState = {
    specialist_physician_certificate_series: '',
    account_name: '',
    specialty_id: -1,
+   password: '',
    readInstruction: false
 }
 
@@ -64,6 +66,11 @@ export const doctorFormReducer = (state = defaultState, action) => {
          return {
             ...state,
             specialty_id: action.payload
+         }
+      case DOCTOR_PASSWORD_CHANGED:
+         return {
+            ...state,
+            password: action.payload
          }
       case DOCTOR_READ_INSTRUCTIONS_CHANGED:
          return {

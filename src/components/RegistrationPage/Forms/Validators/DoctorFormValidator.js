@@ -124,6 +124,26 @@ const isSpecialtyIdValid = specialty_id => {
    return true
 }
 
+const isPasswordValid = pass => {
+   const validated =
+      /[A-Z]/.test(pass) &&
+      /[a-z]/.test(pass) &&
+      /[0-9]/.test(pass) &&
+      /[^A-Za-z0-9]/.test(pass) &&
+      pass.length >= 10
+   const err_msg = 'Password should contain \n' + 
+                  '1.At least one uppercase letter\n' +
+                  '2.At least one lowercase letter\n' +
+                  '3.At least one digit\n' + 
+                  '4.At least one special symbol\n' + 
+                  '5.Should be more than 10 character'
+   if (!!!validated) {
+      errorToast(err_msg)
+      return false
+   }
+   return true
+}
+
 export const isDoctorFormValid = form => (
    isSurnameValid(form.surname) &&
    isNameValid(form.name) &&
@@ -133,5 +153,6 @@ export const isDoctorFormValid = form => (
    isSpecialistPhysicianCertificateSeriesValid(form.specialist_physician_certificate_series) &&
    isAccountNameValid(form.accountName) &&
    isSpecialtyIdValid(form.specialty_id) &&
+   isPasswordValid(form.password) &&
    form.readInstruction
 )

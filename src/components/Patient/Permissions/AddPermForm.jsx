@@ -1,9 +1,11 @@
 import React from 'react'
-import { MDBCard, MDBCardBody, MDBInput, MDBTooltip } from 'mdbreact'
+import { MDBCard, MDBCardBody, MDBInput } from 'mdbreact'
+import Toggle from 'react-bootstrap-toggle'
 
 import 'react-bootstrap-toggle/dist/bootstrap2-toggle.css'
 import { IntervalInput } from '../../Permission-Commons/IntervalInput';
 import { NomenclatoryDropdown } from '../../Utils/NomenclatoryDropdown';
+import { KeyInput } from '../../Utils/KeyInput';
 
 export class AddPermForm extends React.Component {
    constructor(props) {
@@ -16,6 +18,13 @@ export class AddPermForm extends React.Component {
       props.permNomenclatories.specialitiesNomenclatory.forEach((id, specialty) => {
          this.specialities.push(specialty)
       })
+      this.state = {
+         isKeyToggleActive: true
+      }
+   }
+
+   onKeyToggle = () => {
+      this.setState({ isKeyToggleActive: !!!this.state.isKeyToggleActive })
    }
 
    submitHandler = event => {
@@ -54,32 +63,56 @@ export class AddPermForm extends React.Component {
                         icon={{ className: "teal-text", type: "hospital-symbol" }}
                         onSelection={specialties => this.props.onInputChange({ target: { name: 'specialties', value: specialties } })}
                      />
-                     <MDBTooltip
-                        placement="bottom"
-                        tooltipContent="This field needs to be filled only once, when you are adding your first permission. On next permissions you can leave it empty">
-                        <MDBInput
-                           name='decreckey'
-                           onChange={this.props.onInputChange}
-                           label="Records Key"
-                           iconClass="teal-text"
-                           icon="key"
-                           type="password"
-                           required
+                     <center style={{ margin: '20px 20px' }}>
+                        <Toggle
+                           data-attr-best="Take That"
+                           active={this.state.isKeyToggleActive}
+                           onstyle="success"
+                           offstyle="danger"
+                           onClick={this.onKeyToggle}
+                           on={<b>KEYS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>}
+                           off={<b>&nbsp;NO&nbsp;KEYS</b>}
+                           recalculateOnResize={true}
                         />
-                     </MDBTooltip>
-                     <MDBTooltip
-                        placement="bottom"
-                        tooltipContent="Enter your encryption key in order to sign your record key. This field must be filled only if you filled Records Key field">
-                        <MDBInput
-                           name='enckey'
-                           onChange={this.props.onInputChange}
-                           label="Encryption Key"
-                           iconClass="teal-text"
-                           icon="key"
-                           type="password"
-                           required
-                        />
-                     </MDBTooltip>
+                     </center>
+                     {
+                        this.state.isKeyToggleActive &&
+                        <React.Fragment>
+                           <center>
+                              <font color="black">
+                                 {"One of the following fields needs to be filled only once, when you are adding your first permission for specified doctor"}
+                              </font>
+                           </center>
+                           <KeyInput
+                              id="password-input"
+                              tooltip="Enter your password in order to decrypt your keys from wallet"
+                              keyName="password"
+                              label="Password"
+                              iconType="unlock-alt"
+                              iconClass="teal-text"
+                              onChange={this.props.onInputChange}
+                           />
+                           <center><p>or</p></center>
+                           <KeyInput
+                              id="decreckey-input"
+                              tooltip="Enter your private records encryption key"
+                              keyName="decreckey"
+                              label="Records Key"
+                              iconType="key"
+                              iconClass="teal-text"
+                              onChange={this.props.onInputChange}
+                           />
+                           <KeyInput
+                              id="enckey-input"
+                              tooltip="Enter your encryption key in order to sign your records key"
+                              keyName="enckey"
+                              label="Encryption Key"
+                              iconType="key"
+                              iconClass="teal-text"
+                              onChange={this.props.onInputChange}
+                           />
+                        </React.Fragment>
+                     }
                   </div>
                   {this.props.children}
                </form>

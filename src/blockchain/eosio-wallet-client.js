@@ -247,6 +247,8 @@ class EOSIOWalletClient {
                return
             }
             encrypted_patient_decreckey = Crypto.encryptWithRSA(perm.decreckey, doctor_table.rows[0].pubenckey, perm.enckey)
+            perm.decreckey = null
+            perm.enckey = null
          }
          onSucc(await this._transaction(medicalContract.actions.addperm, {
             perm: {

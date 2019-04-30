@@ -395,7 +395,7 @@ class _PatientPermissions extends React.Component {
       }
    }
 
-   _onUpdatePermSuccess = permInfo => receipt => {
+   __onUpdatePermSuccess = permInfo => receipt => {
       this.setState({
          tr_receipt: {
             id: receipt.transaction_id,
@@ -407,16 +407,21 @@ class _PatientPermissions extends React.Component {
          },
          table: {
             columns: table_mapping.columns,
-            rows: this.state.table.rows.map(row =>
-               row.change.props.id !== permInfo.permid
-                  ? row
-                  : {
+            rows: this.state.table.rows.map(row => {
+               if (row.change.props.id !== permInfo.permid) {
+                  return row
+               } else {
+                  const updatedRow = {
                      ...row,
                      specialties: permInfo.specialtyids.map(id => this.props.specialitiesNomenclatory.get(id)).join(this.specialtiesDelimiter),
                      right: this.props.rightsNomenclatory.get(permInfo.rightid),
                      start_time: permInfo.from === 0 ? 'INFINITE' : this.__getNormalizedDateTime(permInfo.from),
                      end_time: permInfo.to === 0 ? 'INFINITE' : this.__getNormalizedDateTime(permInfo.to)
                   }
+                  this.permInfoForModify = this.__extractPermInfoForUpdatingFromRow(updatedRow)
+                  return updatedRow
+               }
+            }
             )
          }
       })
@@ -427,7 +432,7 @@ class _PatientPermissions extends React.Component {
       const permInfo = { ...unmodified, ...modified }
       eosio_client.updt_permission(
          permInfo,
-         this._onUpdatePermSuccess(permInfo),
+         this.__onUpdatePermSuccess(permInfo),
          err_msg => errorToast(err_msg)
       )
    }
