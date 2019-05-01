@@ -6,6 +6,7 @@ export const routes = {
    },
    doctor: {
       home: '/doctor/home',
-      permissions: '/doctor/permissions'
+      permissions: '/doctor/permissions',
+      records: '/doctor/records'
    }
 }

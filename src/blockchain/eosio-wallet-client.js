@@ -17,7 +17,9 @@ const medicalContract = {
    actions: {
       addperm: 'addperm',
       updtperm: 'updtperm',
-      rmperm: 'rmperm'
+      rmperm: 'rmperm',
+      writerecord: 'writerecord',
+      readrecords: 'readrecords'
    },
    tables: {
       rights: { name: 'rights', limit: 1 },
@@ -236,7 +238,7 @@ class EOSIOWalletClient {
    add_permission = async (perm, onSucc, onErr) => {
       try {
          if (!!!this.account) {
-            onErr('Failed push transaction : Not connected to wallet')
+            onErr('Failed to push transaction : Not connected to wallet')
             return
          }
          let encrypted_patient_decreckey = perm.decreckey
@@ -278,7 +280,7 @@ class EOSIOWalletClient {
    updt_permission = async (perm, onSucc, onErr) => {
       try {
          if (!!!this.account) {
-            onErr('Failed push transaction : Not connected to wallet')
+            onErr('Failed to push transaction : Not connected to wallet')
             return
          }
          onSucc(await this._transaction(medicalContract.actions.updtperm, {
@@ -309,7 +311,7 @@ class EOSIOWalletClient {
    rm_permission = async (perm, onSucc, onErr) => {
       try {
          if (!!!this.account) {
-            onErr('Failed push transaction : Not connected to wallet')
+            onErr('Failed to push transaction : Not connected to wallet')
             return
          }
          onSucc(await this._transaction(medicalContract.actions.rmperm, {
@@ -329,6 +331,45 @@ class EOSIOWalletClient {
             onErr('Failed to push transaction')
          }
       }
+   }
+
+   add_record = async recordDetails => {
+      const status = {
+         isSuccess: false
+      }
+      try {
+         if (!!!this.account) {
+            status.msg = 'Failed to push transaction : Not connected to wallet'
+         } else {
+            const tr_receipt = await this._transaction(medicalContract.actions.writerecord, {
+               perm: {
+                  patient: recordDetails.patient,
+                  doctor: this.account.name
+               },
+               specialtyid: recordDetails.specialtyid,
+               recordinfo: {
+                  hash: recordDetails.hash,
+                  description: recordDetails.description
+               }
+            })
+            /* 
+               There should be tr_receipt status check 
+               if (tr_receipt.processed.receipt.status === "executed")
+            */
+            status.isSuccess = true
+            status.tr_receipt = tr_receipt
+         }
+      } catch (e) {
+         console.error(e)
+         if (e instanceof RpcError) {
+            status.msg = getErrMsgFromRpcErr(e)
+         } else if (e.message) {
+            status.msg = e.message
+         } else {
+            status.msg = 'Failed to push transaction'
+         }
+      }
+      return status
    }
 }
 

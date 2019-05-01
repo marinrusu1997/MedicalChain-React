@@ -7,12 +7,14 @@
     "@material-ui/icons": "^3.0.2",
     "await-to-js": "^2.1.1",
     "axios": "^0.18.0",
+    "bootstrap-fileinput": "^5.0.2",
     "cryptico": "^1.0.2",
     "crypto-js": "^3.1.9-1",
     "dateformat": "^3.0.3",
     "eos-encrypt": "^1.0.1",
     "eosjs": "^20.0.0-beta3",
     "eosjs-ecc": "^4.0.4",
+    "lz-string": "^1.4.4",
     "material-ui": "^0.20.2",
     "mdbreact": "^4.11.0",
     "react": "^16.8.4",
@@ -34,7 +36,8 @@
     "redux-saga": "^1.0.2",
     "scatterjs-core": "^2.7.16",
     "scatterjs-plugin-eosjs2": "^1.5.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.3333",
+    "window.ipfs-fallback": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

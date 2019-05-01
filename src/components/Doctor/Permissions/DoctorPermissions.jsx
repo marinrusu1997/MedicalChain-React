@@ -61,7 +61,7 @@ export class DoctorPermissions extends React.Component {
             />
 
             <MDBCard narrow>
-               <MDBCardHeader className="view view-cascade gradient-card-header green darken-2 d-flex justify-content-between align-items-center py-2 mx-4 mb-3">
+               <MDBCardHeader className="view view-cascade gradient-card-header purple-gradient darken-2 d-flex justify-content-between align-items-center py-2 mx-4 mb-3">
                   <div>
                   </div>
                   <a href="#!" className="white-text mx-3">Requests for permissions Management</a>

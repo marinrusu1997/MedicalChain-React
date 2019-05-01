@@ -19,53 +19,6 @@ import {
 import { eosio_client } from '../blockchain/eosio-wallet-client'
 import { errorToast, succToast } from './Utils/Toasts'
 
-import CryptoJS from 'crypto-js'
-
-function md5File() {
-  console.log(CryptoJS.SHA256('Hello World!').toString())
-
-}
-
-var message = "Hello World";
-var password = "Secret Password";
-
-const generateKeyForAES = pass => {
-  const salt = CryptoJS.lib.WordArray.random(128 / 8)
-  const key = CryptoJS.PBKDF2(pass, salt, {
-    keySize: 512 / 32,
-    iterations: 1000
-  })
-  return key.toString()
-}
-
-const generateIV = () => {
-  return CryptoJS.lib.WordArray.random(128 / 8)
-}
-
-const AESEncrypt = (msg, key) => {
-  const iv = generateIV()
-  const encrypted = CryptoJS.AES.encrypt(msg, key, {
-    iv: iv
-  })
-  return iv.toString() + encrypted.toString()
-}
-
-const AESDecrypt = (encrypted_packet, key) => {
-  const iv = CryptoJS.enc.Hex.parse(encrypted_packet.substr(0, 32))
-  const msg = encrypted_packet.substr(32)
-  return CryptoJS.AES.decrypt(msg, key, {
-    iv: iv
-  }).toString(CryptoJS.enc.Utf8)
-}
-
-function AES() {
-  const key = generateKeyForAES(password)
-  const encrypted = AESEncrypt(message, key);
-  console.log("Key: ", key.toString())
-  var decrypted = AESDecrypt(encrypted, key);
-  console.log("Decrypted: ", decrypted);
-}
-
 class App extends React.Component {
 
   onSignInHandler = userType => {

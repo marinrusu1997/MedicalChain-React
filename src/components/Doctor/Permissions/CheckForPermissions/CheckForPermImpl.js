@@ -60,6 +60,19 @@ const checkIfMatchInterval = (req_interval, curr_interval) => {
    return false
 }
 
+const checkIfMatchRight = (perm_right, req_right) => {
+   /*
+      CONSULT        -> 0
+      ADD            -> 1
+      CONSULT & ADD  -> 2
+   */
+   if (req_right === 0 && (perm_right === 0 || perm_right === 2))
+      return true
+   if (req_right === 1 && (perm_right === 1 || perm_right === 2))
+      return true
+   return req_right === perm_right
+}
+
 const checkForRequestedPerms = (doctor_perms, permsInfo, req_perms, nomenclatories) => {
    const permsInfoMap = new Map()
    permsInfo.forEach(permInfo => {
@@ -71,7 +84,7 @@ const checkForRequestedPerms = (doctor_perms, permsInfo, req_perms, nomenclatori
 
    doctor_perms.forEach(perm_id => {
       const curr_perm_info = permsInfoMap.get(perm_id)
-      if (curr_perm_info.right === req_perms.rightid) {
+      if (checkIfMatchRight(curr_perm_info.right, req_perms.rightid)) {
          req_perms.specialtyids.forEach(specialtyid => {
             if (!!!doctor_specialties_fulfilled.get(specialtyid) && checkIfSpecialtyPresentInSpecialtySet(specialtyid, curr_perm_info.specialtyids)) {
                if (checkIfMatchInterval(req_perms.interval, curr_perm_info.interval)) {

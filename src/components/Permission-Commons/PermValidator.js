@@ -88,9 +88,13 @@ export const validateTimeIsInCorrectInterval = perm => {
    return false
 }
 
-export const validateAccount = account => {
+export const validateAccount = account => {   
    if (account.length === 0 || !account.trim()) {
       errorToast("Account name can't be empty")
+      return false
+   }
+   if (account.length !== 12) {
+      errorToast("Account name must contain 12 characters")
       return false
    }
    if (!!!(account.charAt(0) >= 'a' && account.charAt(0) <= 'z')) {

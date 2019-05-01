@@ -15,7 +15,8 @@ export class NavBar extends React.Component {
          isOpen: false,
          activeLinks: {
             home: false,
-            permissions: false
+            permissions: false,
+            records: false
          }
       }
    }
@@ -24,9 +25,10 @@ export class NavBar extends React.Component {
       this.setState({ isOpen: !this.state.isOpen });
    }
 
-   setHomeActive = () => this.setState({ activeLinks: { home: true, permissions: false } })
-   setPermissionsActive = () => this.setState({ activeLinks: { home: false, permissions: true } })
-   resetActiveLinks = () => this.setState({ activeLinks: { home: false, permissions: false } })
+   setHomeActive = () => this.setState({ activeLinks: { home: true, permissions: false, records: false } })
+   setPermissionsActive = () => this.setState({ activeLinks: { home: false, permissions: true, records: false } })
+   setRecordsActive = () => this.setState({ activeLinks: { home: false, permissions: false, records: true } })
+   resetActiveLinks = () => this.setState({ activeLinks: { home: false, permissions: false, records: false } })
 
    render() {
       return (
@@ -42,6 +44,9 @@ export class NavBar extends React.Component {
                   </MDBNavItem>
                   <MDBNavItem active={this.state.activeLinks.permissions} onClick={this.setPermissionsActive}>
                      <MDBNavLink to={routes.doctor.permissions}>Permissions</MDBNavLink>
+                  </MDBNavItem>
+                  <MDBNavItem active={this.state.activeLinks.records} onClick={this.setRecordsActive}>
+                     <MDBNavLink to={routes.doctor.records}>Records</MDBNavLink>
                   </MDBNavItem>
                </MDBNavbarNav>
                <MDBNavbarNav right>
