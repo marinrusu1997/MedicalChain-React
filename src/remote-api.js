@@ -12,6 +12,10 @@ export const server = {
       method: 'post',
       api: '/doctor/full-names'
    },
+   patientFullNameFromAcc: {
+      method: 'post',
+      api: '/patient/full-name'
+   },
    patientAccFromFullName: {
       method: 'post',
       api: '/patient/acc-from-full-name'

@@ -21,6 +21,23 @@ export const getDoctorFullNamesFromAccs = async accounts => {
    return Promise.resolve(fullNamesMap)
 }
 
+export const getPatientFullNameFromAccount = async account => {
+   let fullName = null
+   try {
+      const res = await axios({
+         method: server.patientFullNameFromAcc.method,
+         url: server.patientFullNameFromAcc.api,
+         data: {
+            account: account
+         }
+      })
+      fullName = res.data.full_name
+   } catch (e) {
+      console.error(e)
+   }
+   return fullName
+}
+
 export const getPatientAccountsFromFullName = async full_name => {
    let accountsArr = []
    try {

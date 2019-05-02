@@ -37,6 +37,6 @@ export const table_model = [
       label: [<i key="View" className={`far fa-eye mr-2 ${imageColor}`} aria-hidden={ariaHiddenParam}></i>, 'View'],
       field: 'view',
       sort: 'asc',
-      width: 50
+      width: 10
    }
 ]

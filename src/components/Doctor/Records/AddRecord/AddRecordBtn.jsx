@@ -1,6 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { MDBBtn, MDBTooltip } from "mdbreact";
+import { MDBBtn } from "mdbreact";
 import { errorToast, succToast } from "../../../Utils/Toasts";
 import { AddRecordModal } from './AddRecordModal';
 
@@ -10,7 +9,7 @@ import { ObjectDecorator } from "../../../../utils/ObjectDecorator";
 import { Compressor } from '../../../../utils/Compressor';
 import { storeFileToIPFS, retrieveFileFromIPFS } from "../../../../utils/IPFS";
 
-export class _AddRecordBtn extends React.Component {
+export class AddRecordBtn extends React.Component {
 
    constructor(props) {
       super(props)
@@ -18,10 +17,6 @@ export class _AddRecordBtn extends React.Component {
          modal: {
             isOpen: false
          }
-      }
-      this.specialitiesNomenclatory = {
-         normal: null,
-         reversed: null
       }
    }
 
@@ -34,22 +29,13 @@ export class _AddRecordBtn extends React.Component {
       }
    }
 
-   _tryMakeReversedSpecialtiesNomenclatory = () => {
-      if (!!!this.specialitiesNomenclatory.reversed) {
-         this.specialitiesNomenclatory.normal = this.props.specialitiesNomenclatory
-         this.specialitiesNomenclatory.reversed = new Map()
-         this.props.specialitiesNomenclatory.forEach((v, k) => this.specialitiesNomenclatory.reversed.set(v, k))
-      }
-   }
-
    onAddRecordBtnClick = () => {
       if (!!!this.__checkIfBrowserSupportsFileAPI())
          return
-      if (!!!this.props.specialitiesNomenclatory) {
+      if (!!!this.props.specialitiesNomenclatory.reversed) {
          errorToast('Specialities nomenclatory is not loaded')
          return
       }
-      this._tryMakeReversedSpecialtiesNomenclatory()
       this.onModalTogle()
    }
 
@@ -97,7 +83,7 @@ export class _AddRecordBtn extends React.Component {
 
    __getNormalizedRecordDetails = (params, hash) => ({
       patient: params.patient,
-      specialtyid: this.specialitiesNomenclatory.reversed.get(params.speciality),
+      specialtyid: this.props.specialitiesNomenclatory.reversed.get(params.speciality),
       hash: hash,
       description: params.description
    })
@@ -141,7 +127,7 @@ export class _AddRecordBtn extends React.Component {
                isOpen={this.state.modal.isOpen}
                toggle={this.onModalTogle}
                onAddRecordClick={this.onAddRecordHandler}
-               specialitiesNomenclatory={this.specialitiesNomenclatory}
+               specialitiesNomenclatory={this.props.specialitiesNomenclatory}
             />
             <MDBBtn outline rounded size="sm" color="white" className="px-2 btn-circle" onClick={this.onAddRecordBtnClick}>
                <i className="fa fa-file-medical"></i>
@@ -150,11 +136,3 @@ export class _AddRecordBtn extends React.Component {
       )
    }
 }
-
-const mapStateToProps = state => {
-   return {
-      specialitiesNomenclatory: state.blockchain.specialities
-   }
-}
-
-export const AddRecordBtn = connect(mapStateToProps, null)(_AddRecordBtn)

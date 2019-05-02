@@ -1,7 +1,7 @@
 import React from 'react'
-import { MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } from "mdbreact";
-import { AddRecordForm } from './AddRecordForm';
-import { validateAddParams } from "./AddRecordFormValidator";
+import { MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } from "mdbreact"
+import { KeysRequestForm } from "./KeysRequestForm"
+import { validateKeysRequestForm } from "./KeysRequestFormValidator"
 
 import { errorToast } from "../../../Utils/Toasts";
 import { retrieveEncryptionKey } from "../../../../servers/wallet";
@@ -9,34 +9,34 @@ import { eosio_client } from "../../../../blockchain/eosio-wallet-client";
 import { Crypto } from "../../../../blockchain/eosio-crypto";
 import { ObjectDecorator } from "../../../../utils/ObjectDecorator";
 
-export class AddRecordModal extends React.Component {
+export class KeysRequestModal extends React.Component {
 
    constructor(props) {
       super(props)
-      this.addRecordParams = {}
+      this.keys = {}
    }
 
    onInputChangeHandler = event => {
-      this.addRecordParams[event.target.name] = event.target.value
+      this.keys[event.target.name] = event.target.value
    }
 
    _tryRetriveEncryptionKeyFromWallet = async () => {
-      if (this.addRecordParams.password) {
+      if (this.keys.password) {
          const keyFromWallet = await retrieveEncryptionKey(eosio_client.getAccountName())
          if (!!!keyFromWallet) {
             throw new Error('Failed to retrieve your encryption key from wallet. You must enter it manually')
          }
-         this.addRecordParams.enckey = Crypto.decryptAESWithPassword(keyFromWallet, this.addRecordParams.password)
-         this.addRecordParams.password = null
-         this.addRecordParams = ObjectDecorator.removeProperty(this.addRecordParams, 'password')
+         this.keys.enckey = Crypto.decryptAESWithPassword(keyFromWallet, this.keys.password)
+         this.keys.password = null
+         this.keys = ObjectDecorator.removeProperty(this.keys, 'password')
       }
    }
 
-   onAddBtnClickHandler = async () => {
+   onProvideBtnClickHandler = async () => {
       try {
-         if (validateAddParams(this.addRecordParams)) {
+         if (validateKeysRequestForm(this.keys)) {
             await this._tryRetriveEncryptionKeyFromWallet()
-            await this.props.onAddRecordClick(this.addRecordParams)
+            await this.props.onEncryptionKeyProvided(this.keys.enckey)
          }
       } catch (e) {
          console.error(e)
@@ -50,19 +50,19 @@ export class AddRecordModal extends React.Component {
             <MDBModalHeader
                toggle={this.props.toggle}
                titleClass="d-inline title"
-               className="text-center gradient-card-header purple-gradient darken-2 white-text">
+               className="text-center gradient-card-header peach-gradient darken-2 white-text">
                <em>
-                  <MDBIcon icon="file-medical-alt" />  Add Medical Record
-            </em>
+                  <MDBIcon icon="key" /> Your Encryption Key
+               </em>
             </MDBModalHeader>
             <MDBModalBody>
-               <AddRecordForm onInputChange={this.onInputChangeHandler} specialitiesNomenclatory={this.props.specialitiesNomenclatory.reversed}>
+               <KeysRequestForm onInputChange={this.onInputChangeHandler} >
                   <div className="text-center">
-                     <button className="btn btn-info" onClick={this.onAddBtnClickHandler}>
-                        Add
+                     <button className="btn btn-success" onClick={this.onProvideBtnClickHandler}>
+                        Provide
                      </button>
                   </div>
-               </AddRecordForm>
+               </KeysRequestForm>
             </MDBModalBody>
          </MDBModal>
       )
