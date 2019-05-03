@@ -10,7 +10,7 @@ export class FileInput extends React.Component {
       }
    }
 
-   _getDefaultLabelName = () => "Choose medical record ..."
+   _getDefaultLabelName = () => <font color="grey">Choose medical record ...</font>
 
    onFileSelected = event => {
       if (event.target.files.length === 1) {

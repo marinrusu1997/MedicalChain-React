@@ -56,7 +56,7 @@ export class AddRecordModal extends React.Component {
             </em>
             </MDBModalHeader>
             <MDBModalBody>
-               <AddRecordForm onInputChange={this.onInputChangeHandler} specialitiesNomenclatory={this.props.specialitiesNomenclatory.reversed}>
+               <AddRecordForm onInputChange={this.onInputChangeHandler}>
                   <div className="text-center">
                      <button className="btn btn-info" onClick={this.onAddBtnClickHandler}>
                         Add

@@ -32,10 +32,6 @@ export class AddRecordBtn extends React.Component {
    onAddRecordBtnClick = () => {
       if (!!!this.__checkIfBrowserSupportsFileAPI())
          return
-      if (!!!this.props.specialitiesNomenclatory.reversed) {
-         errorToast('Specialities nomenclatory is not loaded')
-         return
-      }
       this.onModalTogle()
    }
 
@@ -81,17 +77,17 @@ export class AddRecordBtn extends React.Component {
 
    __wipeEncriptionKey = params => ObjectDecorator.removeProperty(params, 'enckey')
 
-   __getNormalizedRecordDetails = (params, hash) => ({
+   __getDoctorSpecialtyID = async () => {
+      const doctor_table = await eosio_client.doctors(eosio_client.getAccountName())
+      return doctor_table.rows[0].specialtyid
+   }
+
+   __getNormalizedRecordDetails = async (params, hash) => ({
       patient: params.patient,
-      specialtyid: this.props.specialitiesNomenclatory.reversed.get(params.speciality),
+      specialtyid: await this.__getDoctorSpecialtyID(),
       hash: hash,
       description: params.description
    })
-
-   __displayHashContent = async (hashToStoreInBchain, key) => {
-      console.log(hashToStoreInBchain)
-      console.log(Compressor.decompressLZWURIEncoded(Crypto.decryptWithAES(await retrieveFileFromIPFS(hashToStoreInBchain), key)))
-   }
 
    __cbWhenFileReadingIsDone = params => async fileContent => {
       try {
@@ -101,7 +97,7 @@ export class AddRecordBtn extends React.Component {
          const encryptedCompressedFileContent = Crypto.encryptWithAES(Compressor.compressLZWURIEncoded(fileContent), params.enckey)
          params = this.__wipeEncriptionKey(params)
          const hashToStoreInBchain = (await storeFileToIPFS(encryptedCompressedFileContent))[0].hash
-         const tr_status = await eosio_client.add_record(this.__getNormalizedRecordDetails(params, hashToStoreInBchain))
+         const tr_status = await eosio_client.add_record(await this.__getNormalizedRecordDetails(params, hashToStoreInBchain))
          if (!!!tr_status.isSuccess) {
             throw new Error(tr_status.msg)
          }
@@ -127,7 +123,6 @@ export class AddRecordBtn extends React.Component {
                isOpen={this.state.modal.isOpen}
                toggle={this.onModalTogle}
                onAddRecordClick={this.onAddRecordHandler}
-               specialitiesNomenclatory={this.props.specialitiesNomenclatory}
             />
             <MDBBtn outline rounded size="sm" color="white" className="px-2 btn-circle" onClick={this.onAddRecordBtnClick}>
                <i className="fa fa-file-medical"></i>

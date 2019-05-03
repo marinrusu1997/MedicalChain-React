@@ -6,10 +6,6 @@ const hasRequiredFields = params => {
       errorToast('Please provide patient account')
       return false
    }
-   if (!!!params.speciality) {
-      errorToast('Please provide speciality of the medical record')
-      return false
-   }
    if (!!!params.fileDetails) {
       errorToast('Please choose a medical record')
       return false
