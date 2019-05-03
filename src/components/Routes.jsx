@@ -12,6 +12,7 @@ import { PatientPermissions } from './Patient/Permissions/PatientPermissions'
 import { DoctorHome } from './Doctor/DoctorHome'
 import { DoctorPermissions } from './Doctor/Permissions/DoctorPermissions'
 import { RecordsDoctorView } from './Doctor/Records/RecordsDoctorView';
+import { RecordsPatientView } from './Patient/Records/RecordsPatientView';
 
 class Routes extends React.Component {
    render() {
@@ -22,6 +23,7 @@ class Routes extends React.Component {
                   <Route path={routes.app} component={App} />
                   <PrivateRoute path={routes.patient.home} component={PatientHome} authed={this.props.isUserLoggedIn} />
                   <PrivateRoute path={routes.patient.permissions} component={PatientPermissions} authed={this.props.isUserLoggedIn} />
+                  <PrivateRoute path={routes.patient.records} component={RecordsPatientView} authed={this.props.isUserLoggedIn} />
                   <PrivateRoute path={routes.doctor.home} component={DoctorHome} authed={this.props.isUserLoggedIn} />
                   <PrivateRoute path={routes.doctor.permissions} component={DoctorPermissions} authed={this.props.isUserLoggedIn} />
                   <PrivateRoute path={routes.doctor.records} component={RecordsDoctorView} authed={this.props.isUserLoggedIn} />

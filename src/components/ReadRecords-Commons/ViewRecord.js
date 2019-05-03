@@ -1,9 +1,9 @@
-import { eosio_client } from "../../../../blockchain/eosio-wallet-client";
-import { Crypto } from "../../../../blockchain/eosio-crypto";
-import { Compressor } from '../../../../utils/Compressor';
-import { retrieveFileFromIPFS } from "../../../../utils/IPFS";
-import { Clipboard } from '../../../../utils/Clipboard';
-import { errorToast, succToast } from '../../../Utils/Toasts';
+import { eosio_client } from "../../blockchain/eosio-wallet-client";
+import { Crypto } from "../../blockchain/eosio-crypto";
+import { Compressor } from '../../utils/Compressor';
+import { retrieveFileFromIPFS } from "../../utils/IPFS";
+import { Clipboard } from '../../utils/Clipboard';
+import { errorToast, succToast } from '../Utils/Toasts';
 
 export class ViewRecordLogic {
    static tryGetPatientKeyFromBchain = async (patient, enckey) => {

@@ -3,11 +3,11 @@ import { MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } from "mdbreact"
 import { KeysRequestForm } from "./KeysRequestForm"
 import { validateKeysRequestForm } from "./KeysRequestFormValidator"
 
-import { errorToast } from "../../../Utils/Toasts";
-import { retrieveEncryptionKey } from "../../../../servers/wallet";
-import { eosio_client } from "../../../../blockchain/eosio-wallet-client";
-import { Crypto } from "../../../../blockchain/eosio-crypto";
-import { ObjectDecorator } from "../../../../utils/ObjectDecorator";
+import { errorToast } from "../../Utils/Toasts";
+import { retrieveEncryptionKey, retrieveRecordsKey } from "../../../servers/wallet";
+import { eosio_client } from "../../../blockchain/eosio-wallet-client";
+import { Crypto } from "../../../blockchain/eosio-crypto";
+import { ObjectDecorator } from "../../../utils/ObjectDecorator";
 
 export class KeysRequestModal extends React.Component {
 
@@ -20,11 +20,11 @@ export class KeysRequestModal extends React.Component {
       this.keys[event.target.name] = event.target.value
    }
 
-   _tryRetriveEncryptionKeyFromWallet = async () => {
+   __tryRetrieveKeyFromWallet = async keyTypeRetriever => {
       if (this.keys.password) {
-         const keyFromWallet = await retrieveEncryptionKey(eosio_client.getAccountName())
+         const keyFromWallet = await keyTypeRetriever(eosio_client.getAccountName())
          if (!!!keyFromWallet) {
-            throw new Error('Failed to retrieve your encryption key from wallet. You must enter it manually')
+            throw new Error('Failed to retrieve your key from wallet. You must enter it manually')
          }
          this.keys.enckey = Crypto.decryptAESWithPassword(keyFromWallet, this.keys.password)
          this.keys.password = null
@@ -35,7 +35,11 @@ export class KeysRequestModal extends React.Component {
    onProvideBtnClickHandler = async () => {
       try {
          if (validateKeysRequestForm(this.keys)) {
-            await this._tryRetriveEncryptionKeyFromWallet()
+            if (!!!this.props.reqForRecKey) {
+               await this.__tryRetrieveKeyFromWallet(retrieveEncryptionKey)
+            } else {
+               await this.__tryRetrieveKeyFromWallet(retrieveRecordsKey)
+            }
             await this.props.onEncryptionKeyProvided(this.keys.enckey)
          }
       } catch (e) {
@@ -52,7 +56,9 @@ export class KeysRequestModal extends React.Component {
                titleClass="d-inline title"
                className="text-center gradient-card-header peach-gradient darken-2 white-text">
                <em>
-                  <MDBIcon icon="key" /> Your Encryption Key
+                  <MDBIcon icon="key" />
+                  {!!!this.props.reqForRecKey && "Your Encryption Key"}
+                  {this.props.reqForRecKey && "Your Records Key"}
                </em>
             </MDBModalHeader>
             <MDBModalBody>

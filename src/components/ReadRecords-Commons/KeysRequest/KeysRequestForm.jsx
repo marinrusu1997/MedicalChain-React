@@ -1,6 +1,6 @@
 import React from 'react'
-import { MDBCard, MDBCardBody, MDBInput } from "mdbreact"
-import { KeyInput } from "../../../Utils/KeyInput"
+import { MDBCard, MDBCardBody } from "mdbreact"
+import { KeyInput } from "../../Utils/KeyInput"
 
 export class KeysRequestForm extends React.Component {
 

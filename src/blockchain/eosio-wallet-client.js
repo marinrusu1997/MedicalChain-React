@@ -19,7 +19,8 @@ const medicalContract = {
       updtperm: 'updtperm',
       rmperm: 'rmperm',
       writerecord: 'writerecord',
-      readrecords: 'readrecords'
+      readrecords: 'readrecords',
+      recordstab: 'recordstab'
    },
    tables: {
       rights: { name: 'rights', limit: 1 },
@@ -390,6 +391,33 @@ class EOSIOWalletClient {
                   from: querryDetails.from,
                   to: querryDetails.to
                }
+            })
+            status.isSuccess = true
+            status.tr_receipt = tr_receipt
+         }
+      } catch (e) {
+         console.error(e)
+         if (e instanceof RpcError) {
+            status.msg = getErrMsgFromRpcErr(e)
+         } else if (e.message) {
+            status.msg = e.message
+         } else {
+            status.msg = 'Failed to push transaction'
+         }
+      }
+      return status
+   }
+
+   records_table = async () => {
+      const status = {
+         isSuccess: false
+      }
+      try {
+         if (!!!this.account) {
+            status.msg = 'Failed to push transaction : Not connected to wallet'
+         } else {
+            const tr_receipt = await this._transaction(medicalContract.actions.recordstab, {
+               patient: this.account.name
             })
             status.isSuccess = true
             status.tr_receipt = tr_receipt

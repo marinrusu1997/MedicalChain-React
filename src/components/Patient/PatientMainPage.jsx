@@ -2,6 +2,10 @@ import React from "react"
 import { ToastContainer } from 'mdbreact'
 import { Navbar } from './Navigation/NavBar'
 import { BchainResyncIntercepter } from "../Utils/BchainResyncIntercepter";
+import { errorToast, infoToast } from "../Utils/Toasts";
+import { eosio_client } from "../../blockchain/eosio-wallet-client";
+
+let wasCalledConnectToWalletBefore = false
 
 export class PatientMainPage extends React.Component {
 
@@ -14,6 +18,14 @@ export class PatientMainPage extends React.Component {
   }
 
   componentDidMount() {
+    if (!!!eosio_client.is_connected() && !!!wasCalledConnectToWalletBefore) {
+      eosio_client.connect
+        (
+          account => infoToast(`Successfully reconnected with ${account}`),
+          errorToast
+        )
+      wasCalledConnectToWalletBefore = true
+    }
     this.setState({ onResync: this.bchainResyncInterceptorRef.current.bchainTogleModal })
   }
 

@@ -3,7 +3,7 @@ import { MDBBtn } from "mdbreact";
 import { ReadRecordsModal } from "./ReadRecordsModal";
 import { errorToast } from "../../../Utils/Toasts";
 import { eosio_client } from "../../../../blockchain/eosio-wallet-client";
-import { getDoctorFullNamesFromAccs } from "../../../../servers/identification";
+import { DoctorAccToFnameMapper } from '../../../ReadRecords-Commons/DoctorAccToFNameMapper';
 
 export class ReadRecordsBtn extends React.Component {
 
@@ -14,7 +14,7 @@ export class ReadRecordsBtn extends React.Component {
             isOpen: false
          }
       }
-      this.doctorAccToFNameMap = new Map()
+      this.doctorAccToFNameMapper = new DoctorAccToFnameMapper()
    }
 
    onModalTogle = () => {
@@ -40,11 +40,7 @@ export class ReadRecordsBtn extends React.Component {
       if (!!!doctor_fname_flag) {
          return account
       }
-      const fullName = this.doctorAccToFNameMap.get(account)
-      if (!!!fullName) {
-         return account
-      }
-      return fullName.surname + " " + fullName.name
+      return this.doctorAccToFNameMapper.getFullNameOrAccountIfMissing(account)
    }
 
    _getNormalizedRecordsRows = (recordsJSON, doctor_fname_flag) => {
@@ -67,25 +63,18 @@ export class ReadRecordsBtn extends React.Component {
       return rows
    }
 
-   __tryRetrieveDoctorsAccounts = async recordsJSON => {
+   __filterMissingDoctorAccs = recordsJSON => {
       const missingDocAccounts = new Set()
       let currentRecordDetailsArray = null
       for (const specialty_id in recordsJSON) {
          currentRecordDetailsArray = recordsJSON[specialty_id]
          for (const recordDetails of currentRecordDetailsArray) {
-            if (!!!this.doctorAccToFNameMap.has(recordDetails.doctor)) {
+            if (!!!this.doctorAccToFNameMapper.getFullName(recordDetails.doctor)) {
                missingDocAccounts.add(recordDetails.doctor)
             }
          }
       }
-      const missingDocAccountsArr = Array.from(missingDocAccounts)
-      if (missingDocAccountsArr.length !== 0) {
-         const docAccsRetrievedFromServer = await getDoctorFullNamesFromAccs(missingDocAccountsArr)
-         if (docAccsRetrievedFromServer.size === 0) {
-            return errorToast('Failed to retrieve missing doctor full names')
-         }
-         docAccsRetrievedFromServer.forEach((fullName, account) => this.doctorAccToFNameMap.set(account, fullName))
-      }
+      return Array.from(missingDocAccounts)
    }
 
    onReadRecordsHandler = async querryDetails => {
@@ -96,7 +85,7 @@ export class ReadRecordsBtn extends React.Component {
          }
          const recordsJSON = JSON.parse(tr_status.tr_receipt.processed.action_traces[0].console)
          if (querryDetails.doctor_full_name_flag) {
-            await this.__tryRetrieveDoctorsAccounts(recordsJSON, querryDetails.doctor_full_name_flag)
+            await this.doctorAccToFNameMapper.tryRetrieveFullNames(this.__filterMissingDoctorAccs(recordsJSON))
          }
          const table_rows = this._getNormalizedRecordsRows(recordsJSON, querryDetails.doctor_full_name_flag)
          if (table_rows.length === 0) {

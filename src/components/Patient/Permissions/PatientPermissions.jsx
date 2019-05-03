@@ -275,7 +275,7 @@ class _PatientPermissions extends React.Component {
    _getPermsDatasetAsync = () => {
       try {
          if (!!!eosio_client.is_connected()) {
-            eosio_client.connect(this._requestPermsFromBlockchain, msg => errorToast(msg))
+            eosio_client.connect(this._requestPermsFromBlockchain, errorToast)
          } else {
             this._requestPermsFromBlockchain()
          }

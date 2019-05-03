@@ -1,4 +1,4 @@
-import { errorToast } from "../../../Utils/Toasts"
+import { errorToast } from "../../Utils/Toasts"
 
 export const validateKeysRequestForm = form => {
    if (!!!form.password && !!!form.enckey) {

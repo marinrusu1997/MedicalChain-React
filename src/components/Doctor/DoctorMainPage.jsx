@@ -19,12 +19,12 @@ export class DoctorMainPage extends React.Component {
    componentDidMount() {
       if (!!!eosio_client.is_connected() && !!!wasCalledConnectToWalletBefore) {
          eosio_client.connect
-            (
-               acc => infoToast('Reconnected to wallet acc ' + acc),
-               err_msg => errorToast(err_msg)
-            )
+           (
+             account => infoToast(`Successfully reconnected with ${account}`),
+             errorToast
+           )
          wasCalledConnectToWalletBefore = true
-      }
+       }
       this.setState({ onResync: this.bchainResyncInterceptorRef.current.bchainTogleModal })
    }
 

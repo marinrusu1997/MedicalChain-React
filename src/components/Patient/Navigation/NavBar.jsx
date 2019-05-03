@@ -14,7 +14,8 @@ export class Navbar extends Component {
          isOpen: false,
          activeLinks: {
             home: false,
-            permissions: false
+            permissions: false,
+            records: false
          }
       }
    }
@@ -23,9 +24,10 @@ export class Navbar extends Component {
       this.setState({ isOpen: !this.state.isOpen });
    }
 
-   setHomeActive = () => this.setState({ activeLinks: { home: true, permissions: false } })
-   setPermissionsActive = () => this.setState({ activeLinks: { home: false, permissions: true } })
-   resetActiveLinks = () => this.setState({ activeLinks: { home: false, permissions: false } })
+   setHomeActive = () => this.setState({ activeLinks: { home: true, permissions: false, records: false } })
+   setPermissionsActive = () => this.setState({ activeLinks: { home: false, permissions: true, records: false } })
+   setRecordsActive = () => this.setState({ activeLinks: { home: false, permissions: false, records: true } })
+   resetActiveLinks = () => this.setState({ activeLinks: { home: false, permissions: false, records: false } })
 
    render() {
       return (
@@ -43,7 +45,7 @@ export class Navbar extends Component {
                   <MDBNavItem active={this.state.activeLinks.permissions} onClick={this.setPermissionsActive}>
                      <MDBNavLink to={routes.patient.permissions}>Permissions</MDBNavLink>
                   </MDBNavItem>
-                  <MDBNavItem active={this.state.activeLinks.permissions}>
+                  {/* <MDBNavItem active={this.state.activeLinks.permissions}>
                      <MDBDropdown>
                         <MDBDropdownToggle nav caret>
                            <div className="d-none d-md-inline">Permissions</div>
@@ -53,6 +55,10 @@ export class Navbar extends Component {
                            <MDBDropdownItem>Add</MDBDropdownItem>
                         </MDBDropdownMenu>
                      </MDBDropdown>
+                  </MDBNavItem>
+                  */ }
+                  <MDBNavItem active={this.state.activeLinks.records} onClick={this.setRecordsActive}>
+                     <MDBNavLink to={routes.patient.records}>Records</MDBNavLink>
                   </MDBNavItem>
                </MDBNavbarNav>
                <MDBNavbarNav right>

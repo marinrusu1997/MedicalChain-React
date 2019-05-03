@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { MDBCard, MDBCardHeader, MDBCardBody, MDBDataTable, MDBBtn } from "mdbreact"
 import { AddRecordBtn } from './AddRecord/AddRecordBtn';
 import { ReadRecordsBtn } from './ReadRecords/ReadRecordsBtn';
-import { KeysRequestModal } from "./KeysRequest/KeysRequestModal";
-import { table_model } from './RecordsTableModel';
+import { KeysRequestModal } from "../../ReadRecords-Commons/KeysRequest/KeysRequestModal";
+import { table_model } from '../../ReadRecords-Commons/RecordsTableModel';
 import { getPatientFullNameFromAccount } from "../../../servers/identification";
-import { ViewRecordLogic } from "./ReadRecords/ViewRecord";
+import { ViewRecordLogic } from "../../ReadRecords-Commons/ViewRecord";
 
 export class _RecordsDoctorView extends React.Component {
 
@@ -55,10 +55,15 @@ export class _RecordsDoctorView extends React.Component {
    __makeOnClickHandlerForViewButton = hash => {
       return async () => {
          this.onEncryptionKeyProvidedForRecordViewHandler = async enckey => {
-            ViewRecordLogic.viewRecordContent(await ViewRecordLogic.tryRetrieveRecordFromIPFS(hash,
-               await ViewRecordLogic.tryGetPatientKeyFromBchain(this.state.patient.account, enckey)))
-            enckey = null
-            this.togleKeysModal()
+            try {
+               ViewRecordLogic.viewRecordContent(await ViewRecordLogic.tryRetrieveRecordFromIPFS(hash,
+                  await ViewRecordLogic.tryGetPatientKeyFromBchain(this.state.patient.account, enckey)))
+               enckey = null
+               this.togleKeysModal()
+            } catch (e) {
+               console.error(e)
+               throw e
+            }
          }
          this.togleKeysModal()
       }
