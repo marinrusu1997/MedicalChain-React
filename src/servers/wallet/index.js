@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { wallet } from "../../remote-api"
+import { wallet_service } from "../../remote-api"
 
 const storeKey = async (endpoint, account, key) => {
    let success = false
    try {
       const res = await axios({
          method: endpoint.method,
-         url: wallet.baseUrl + endpoint.api,
+         url: wallet_service.baseUrl + endpoint.api,
          data: {
             account: account,
             key: key
@@ -27,7 +27,7 @@ const retrieveKey = async (endpoint, account) => {
    try {
       const res = await axios({
          method: endpoint.method,
-         url: wallet.baseUrl + endpoint.api,
+         url: wallet_service.baseUrl + endpoint.api,
          data: {
             account: account
          }
@@ -43,17 +43,17 @@ const retrieveKey = async (endpoint, account) => {
 }
 
 export const storeEncryptionKey = async (account, key) => {
-   return await storeKey(wallet.store.encryption, account, key)
+   return await storeKey(wallet_service.store.encryption, account, key)
 }
 
 export const storeRecordsKey = async (account, key) => {
-   return await storeKey(wallet.store.records, account, key)
+   return await storeKey(wallet_service.store.records, account, key)
 }
 
 export const retrieveEncryptionKey = async account => {
-   return await retrieveKey(wallet.retrieve.encryption, account)
+   return await retrieveKey(wallet_service.retrieve.encryption, account)
 }
 
 export const retrieveRecordsKey = async account => {
-   return await retrieveKey(wallet.retrieve.records, account)
+   return await retrieveKey(wallet_service.retrieve.records, account)
 }

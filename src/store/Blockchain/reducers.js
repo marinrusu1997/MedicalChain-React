@@ -1,7 +1,8 @@
 import {
    SPECIALITIES_BCHAIN_TABLE_LOADED,
    RIGHTS_BCHAIN_TABLE_LOADED,
-   BCHAIN_NODE_ENDPOINT_CONFIG_SETUP
+   BCHAIN_NODE_ENDPOINT_CONFIG_SETUP,
+   BCHAIN_CHAIN_ID_LOADED
 } from './actions'
 
 import { persistReducer } from 'redux-persist'
@@ -35,6 +36,14 @@ const _blockchainReducer = (state = defaultState, action) => {
          return {
             ...state,
             config: action.payload
+         }
+      case BCHAIN_CHAIN_ID_LOADED:
+         return {
+            ...state,
+            config: {
+               ...state.config,
+               chainId: action.payload
+            }
          }
       default:
          return state

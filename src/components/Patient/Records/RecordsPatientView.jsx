@@ -139,7 +139,7 @@ export class RecordsPatientView extends React.Component {
                <MDBCardHeader className="view view-cascade gradient-card-header peach-gradient darken-2 d-flex justify-content-between align-items-center py-2 mx-4 mb-3">
                   <div>
                   </div>
-                  <a href="#!" className="white-text mx-3">Records Management</a>
+                  <a href="#!" className="white-text mx-3"><i>Records Management</i></a>
                   <div>
                      <ReadAllRecordsBtn onReadAllRecordsHandler={this._tryLoadRecordsFromBchain} />
                   </div>

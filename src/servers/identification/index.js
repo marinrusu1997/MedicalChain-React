@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { server } from "../../remote-api"
+import { identification_service } from "../../remote-api"
 
 export const getDoctorFullNamesFromAccs = async accounts => {
    const fullNamesMap = new Map()
    try {
       const res = await axios({
-         method: server.doctorNamesFromAcc.method,
-         url: server.doctorNamesFromAcc.api,
+         method: identification_service.doctorNamesFromAcc.method,
+         url: identification_service.baseUrl + identification_service.doctorNamesFromAcc.api,
          data: {
             accounts: accounts
          }
@@ -25,8 +25,8 @@ export const getPatientFullNameFromAccount = async account => {
    let fullName = null
    try {
       const res = await axios({
-         method: server.patientFullNameFromAcc.method,
-         url: server.patientFullNameFromAcc.api,
+         method: identification_service.patientFullNameFromAcc.method,
+         url: identification_service.baseUrl + identification_service.patientFullNameFromAcc.api,
          data: {
             account: account
          }
@@ -42,8 +42,8 @@ export const getPatientAccountsFromFullName = async full_name => {
    let accountsArr = []
    try {
       const res = await axios({
-         method: server.patientAccFromFullName.method,
-         url: server.patientAccFromFullName.api,
+         method: identification_service.patientAccFromFullName.method,
+         url: identification_service.baseUrl + identification_service.patientAccFromFullName.api,
          data: {
             full_name: {
                ...full_name

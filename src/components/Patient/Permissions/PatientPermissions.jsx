@@ -11,53 +11,8 @@ import { getDoctorFullNamesFromAccs } from '../../../servers/identification'
 import { errorToast, succToast, infoToast } from '../../Utils/Toasts'
 import { PermissionModal } from './PermissionModal'
 import { ConfirmationModal } from '../../Utils/ConfirmationModal'
-
-const table_mapping = {
-   columns: [
-      {
-         label: [<i key="Change" className="fa fa-edit mr-2 teal-text" aria-hidden="true"></i>, 'Change'],
-         field: 'change',
-         width: 50
-      },
-      {
-         label: [<i key="Specialty" className="fa fa-hospital-symbol mr-2 teal-text" aria-hidden="true"></i>, 'Specialty'],
-         field: 'specialties',
-         sort: 'asc',
-         width: 200
-      },
-      {
-         label: [<i key="Doctor" className="fa fa-user-md mr-2 teal-text" aria-hidden="true"></i>, 'Doctor'],
-         field: 'doctor',
-         sort: 'asc',
-         width: 150
-      },
-      {
-         label: [<i key="Account" className="fa fa-user-circle mr-2 teal-text" aria-hidden="true"></i>, 'Account'],
-         field: 'account',
-         sort: 'asc',
-         width: 100
-      },
-      {
-         label: [<i key="Right" className="fa fa-book-reader mr-2 teal-text" aria-hidden="true"></i>, 'Right'],
-         field: 'right',
-         sort: 'asc',
-         width: 100
-      },
-      {
-         label: [<i key="Start time" className="fa fa-hourglass-start mr-2 teal-text" aria-hidden="true"></i>, 'Start time'],
-         field: 'start_time',
-         sort: 'asc',
-         width: 150
-      },
-      {
-         label: [<i key="End time" className="fa fa-hourglass-end mr-2 teal-text" aria-hidden="true"></i>, 'End time'],
-         field: 'end_time',
-         sort: 'asc',
-         width: 150
-      }
-   ],
-   rows: []
-}
+import { table_mapping } from "./PatientPermissionsTableModel";
+import { RequestPatientPermsLogic } from "../../Permission-Commons/RequestPatientPermsLogic";
 
 const messageWhenNoSelections = "You don't have any selected permissions. Please select at least one by toggling the button from the Change column"
 const messageWhenTooManySelections = 'Due to the long delay of signing transaction with scatter wallet, we recommend you to select only 1 permission for further changes.' +
@@ -104,12 +59,12 @@ class _PatientPermissions extends React.Component {
 
    __retrieveDoctorName = account => {
       if (this.fullNameDoctorsAccsMap === null)
-         return "Server is down, se we can't provide doctor full name"
+         return ''
       if (this.fullNameDoctorsAccsMap.size === 0)
-         return "Server is down, se we can't provide doctor full name"
+         return ''
       const full_name = this.fullNameDoctorsAccsMap.get(account)
       if (!!!full_name)
-         return "Server is down, se we can't provide doctor full name"
+         return ''
       return full_name.surname + " " + full_name.name
    }
 
@@ -160,8 +115,6 @@ class _PatientPermissions extends React.Component {
    }
 
    __makePermRow = (perm_info, doctor) => {
-      if (!!!this.props.rightsNomenclatory || !!!this.props.specialitiesNomenclatory)
-         throw new Error("Nomenclatures were not loaded")
       this.toggleMap.set(perm_info.id, false)
       return {
          change: this.__makeTogleForChangeScheduling(perm_info.id, doctor, false),
@@ -170,13 +123,21 @@ class _PatientPermissions extends React.Component {
          account: doctor,
          right: this.props.rightsNomenclatory.get(perm_info.right),
          start_time: perm_info.interval.from === 0 ? 'INFINITE' : this.__getNormalizedDateTime(perm_info.interval.from),
-         end_time: perm_info.interval.to === 0 ? 'INFINITE' : this.__getNormalizedDateTime(perm_info.interval.to)
+         end_time: perm_info.interval.to === 0 ? 'INFINITE' : this.__getNormalizedDateTime(perm_info.interval.to),
+         status: RequestPatientPermsLogic._getPermStatus(perm_info.interval, perm_info.right)
+      }
+   }
+
+   __throwIfNomenclatoriesNotLoaded = () => {
+      if (!!!this.props.rightsNomenclatory || !!!this.props.specialitiesNomenclatory) {
+         throw new Error("Nomenclatures were not loaded")
       }
    }
 
    __getNormalizedPerms = (perms, permsInfo) => {
       const normalized = []
       try {
+         this.__throwIfNomenclatoriesNotLoaded()
          const permsInfoMap = new Map()
          permsInfo.forEach(permInfo => {
             permsInfoMap.set(permInfo.id, permInfo)
@@ -213,6 +174,7 @@ class _PatientPermissions extends React.Component {
 
    __retrieveLastAddedPermFromBlockchain = async doctor => {
       try {
+         this.__throwIfNomenclatoriesNotLoaded()
          const _records = await eosio_client.patients()
          const _doctor_perms = _records.rows[0].perms.find(permKV => permKV.key === doctor)
          const greatestPermId = this._getGreatestPermId(_records.rows[0].perms)
@@ -275,7 +237,8 @@ class _PatientPermissions extends React.Component {
    _getPermsDatasetAsync = () => {
       try {
          if (!!!eosio_client.is_connected()) {
-            eosio_client.connect(this._requestPermsFromBlockchain, errorToast)
+            /* eosio_client.connect(this._requestPermsFromBlockchain, errorToast) */
+            throw new Error('Not connected to wallet. Reopen permissions tab')
          } else {
             this._requestPermsFromBlockchain()
          }
@@ -546,7 +509,7 @@ class _PatientPermissions extends React.Component {
                <MDBCardHeader className="view view-cascade gradient-card-header green darken-2 d-flex justify-content-between align-items-center py-2 mx-4 mb-3">
                   <div>
                   </div>
-                  <a href="#!" className="white-text mx-3">Permissions Management</a>
+                  <a href="#!" className="white-text mx-3"><i>Permissions Management</i></a>
                   <div>
                      <MDBBtn outline rounded size="sm" color="white" className="px-2 btn-circle" onClick={this.addPermHandler}>
                         <i className="fa fa-plus-circle mt-0"></i>

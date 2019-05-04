@@ -1,7 +1,7 @@
 import React from "react"
 import { MDBBtn } from "mdbreact"
 import { PatientPermissionsModal } from "./PatientPermissionsModal";
-import { RequestPatientPermsLogic } from "./RequestPatientPermsLogic";
+import { RequestPatientPermsLogic } from "../../../Permission-Commons/RequestPatientPermsLogic";
 import { getPatientFullNameFromAccount } from "../../../../servers/identification";
 
 export class PatientPermissionsBtn extends React.Component {

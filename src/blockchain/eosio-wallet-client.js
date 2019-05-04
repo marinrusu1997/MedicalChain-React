@@ -3,7 +3,7 @@ import ScatterJS from "scatterjs-core"
 import ScatterEOS from "scatterjs-plugin-eosjs2"
 import { Crypto } from "./eosio-crypto";
 
-import { rightsBchainTableLoaded, specialitiesBchainTableLoaded } from '../store/Blockchain/actions'
+import { rightsBchainTableLoaded, specialitiesBchainTableLoaded, bchainChainIdLoaded } from '../store/Blockchain/actions'
 import { store } from '../store'
 
 const requiredFields = {
@@ -66,6 +66,7 @@ class EOSIOWalletClient {
       this.rpc.get_info()
          .then(info => {
             this.network.chainId = info.chain_id
+            store.dispatch(bchainChainIdLoaded(info.chain_id))
             const _network = this.network
             ScatterJS.connect(this.contractAccount, { _network })
                .then(connected => {

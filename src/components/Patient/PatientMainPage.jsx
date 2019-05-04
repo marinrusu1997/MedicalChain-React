@@ -1,7 +1,7 @@
 import React from "react"
 import { ToastContainer } from 'mdbreact'
 import { Navbar } from './Navigation/NavBar'
-import { BchainResyncIntercepter } from "../Utils/BchainResyncIntercepter";
+import { BlockchainEndpointResyncIntercepter } from "../Utils/AppEndpointsConfig/BlockchainEndpointResyncIntercepter";
 import { errorToast, infoToast } from "../Utils/Toasts";
 import { eosio_client } from "../../blockchain/eosio-wallet-client";
 
@@ -26,7 +26,7 @@ export class PatientMainPage extends React.Component {
         )
       wasCalledConnectToWalletBefore = true
     }
-    this.setState({ onResync: this.bchainResyncInterceptorRef.current.bchainTogleModal })
+    this.setState({ onResync: this.bchainResyncInterceptorRef.current.togleModal })
   }
 
   render() {
@@ -37,7 +37,7 @@ export class PatientMainPage extends React.Component {
           newestOnTop={true}
           autoClose={5000}
         />
-        <BchainResyncIntercepter
+        <BlockchainEndpointResyncIntercepter
           onResync={this.props.onResync}
           ref={this.bchainResyncInterceptorRef}
         />

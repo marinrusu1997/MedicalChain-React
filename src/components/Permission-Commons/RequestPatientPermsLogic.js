@@ -1,5 +1,5 @@
-import { eosio_client } from "../../../../blockchain/eosio-wallet-client";
-import { store } from "../../../../store";
+import { eosio_client } from "../../blockchain/eosio-wallet-client";
+import { store } from "../../store";
 
 export class RequestPatientPermsLogic {
 

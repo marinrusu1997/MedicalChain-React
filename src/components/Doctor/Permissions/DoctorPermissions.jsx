@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-   MDBCard, MDBCardHeader, MDBCardBody, MDBBtn, MDBDataTable
+   MDBCard, MDBCardHeader, MDBCardBody, MDBDataTable
 } from 'mdbreact'
 import { CheckForPermModal } from "./CheckForPermissions/CheckForPermModal"
 import { PatientAccountButton } from './PatientAccount/PatientAccountButton'

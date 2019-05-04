@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { server } from '../remote-api'
+import { identification_service } from '../remote-api'
 import { Crypto } from './eosio-crypto'
 import { ObjectDecorator } from '../utils/ObjectDecorator'
 
@@ -83,15 +83,15 @@ const tryCreateAccount = async (registrationInfo, registrCb, api, isPatient) => 
 
 export const tryCreatePatientAccount = async (registrationInfo, registrCb) => {
    await tryCreateAccount(registrationInfo, registrCb, {
-      method: server.registerPatient.method,
-      url: server.registerPatient.api,
+      method: identification_service.registerPatient.method,
+      url: identification_service.baseUrl + identification_service.registerPatient.api,
    }, true)
 }
 
 export const tryCreateDoctorAccount = async (registrationInfo, registrCb) => {
    await tryCreateAccount(registrationInfo, registrCb, {
-      method: server.registerDoctor.method,
-      url: server.registerDoctor.api,
+      method: identification_service.registerDoctor.method,
+      url: identification_service.baseUrl + identification_service.registerDoctor.api,
    }, false)
 }
 

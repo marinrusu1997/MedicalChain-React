@@ -7,7 +7,7 @@ import {
    USER_TYPE_MEDIC,
    USER_TYPE_RESEARCHER
 } from '../../store/App/actions'
-import BchainConfigSlide from './BchainConfigSlide';
+import { AppEndpointsConfigSlide } from './AppEndpointsConfigSlide';
 import { UsersSlide } from './UsersSlide';
 
 export class StartPage extends React.Component {
@@ -58,7 +58,7 @@ export class StartPage extends React.Component {
                      />
                   </MDBCarouselItem>
                   <MDBCarouselItem itemId="4">
-                     <BchainConfigSlide />
+                     <AppEndpointsConfigSlide />
                   </MDBCarouselItem>
                </MDBCarouselInner>
             </MDBCarousel>

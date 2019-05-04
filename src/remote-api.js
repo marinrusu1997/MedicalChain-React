@@ -1,5 +1,7 @@
-export const server = {
-   baseUrl: 'http://localhost:8080',
+import { store } from "./store/";
+
+export const identification_service = {
+   baseUrl: store.getState().services.indentification_address,
    registerPatient: {
       method: 'post',
       api: '/patient/register'
@@ -22,8 +24,8 @@ export const server = {
    }
 }
 
-export const wallet = {
-   baseUrl: 'http://localhost:6080',
+export const wallet_service = {
+   baseUrl: store.getState().services.wallet_address,
    store: {
       encryption: {
          method: 'post',

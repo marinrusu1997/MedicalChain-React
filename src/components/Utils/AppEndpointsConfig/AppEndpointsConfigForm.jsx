@@ -2,7 +2,7 @@ import React from 'react'
 import { MDBInput } from 'mdbreact'
 import Toggle from 'react-bootstrap-toggle'
 
-export class BchainConfigForm extends React.Component {
+export class AppEndpointsConfigForm extends React.Component {
    constructor(props) {
       super(props)
       this.state = {
@@ -47,10 +47,22 @@ export class BchainConfigForm extends React.Component {
                   disabled
                />
                <MDBInput
+                  name='chainId'
+                  value={this.props.config.chainId}
+                  onChange={this.props.onInputChange}
+                  label="Chain Id"
+                  iconClass="teal-text"
+                  className={this.props.inputClassName}
+                  icon="fingerprint"
+                  type="textarea"
+                  rows="1"
+                  disabled
+               />
+               <MDBInput
                   name='host'
                   value={this.props.config.host}
                   onChange={this.props.onInputChange}
-                  label="Host (domain.com or ip)"
+                  label="Blockchain Host (domain.com or ip)"
                   iconClass="teal-text"
                   className={this.props.inputClassName}
                   icon="globe-europe"
@@ -61,7 +73,7 @@ export class BchainConfigForm extends React.Component {
                   name='port'
                   value={this.props.config.port}
                   onChange={this.props.onInputChange}
-                  label="Port"
+                  label="Blockchain Port"
                   iconClass="teal-text"
                   className={this.props.inputClassName}
                   icon="desktop"
@@ -69,15 +81,24 @@ export class BchainConfigForm extends React.Component {
                   required
                />
                <MDBInput
-                  name='chainId'
-                  value={this.props.config.chainId}
+                  name='indentification_address'
+                  value={this.props.config.indentification_address}
                   onChange={this.props.onInputChange}
-                  label="Chain ID (optional)"
+                  label="Identification Service Address (Optional)"
                   iconClass="teal-text"
                   className={this.props.inputClassName}
-                  icon="fingerprint"
-                  type="textarea"
-                  rows="2"
+                  icon="id-card"
+                  type="text"
+               />
+               <MDBInput
+                  name='wallet_address'
+                  value={this.props.config.wallet_address}
+                  onChange={this.props.onInputChange}
+                  label="Wallet Service Address (Optional)"
+                  iconClass="teal-text"
+                  className={this.props.inputClassName}
+                  icon="wallet"
+                  type="text"
                />
             </div>
             {this.props.children}
