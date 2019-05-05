@@ -7,7 +7,8 @@ import { routes } from '../routes'
 import { persistor } from '../store'
 
 import App from './App'
-import { PatientHome } from './Patient/PatientHome'
+import { EOSMedical } from './EOSMedical/EOSMedical'
+import { PatientHome } from './Patient/Home/PatientHome'
 import { PatientPermissions } from './Patient/Permissions/PatientPermissions'
 import { DoctorHome } from './Doctor/DoctorHome'
 import { DoctorPermissions } from './Doctor/Permissions/DoctorPermissions'
@@ -21,6 +22,7 @@ class Routes extends React.Component {
             <Switch>
                <PersistGate loading={<App />} persistor={persistor}>
                   <Route path={routes.app} component={App} />
+                  <PrivateRoute path={routes.eosmedical} component={EOSMedical} authed={this.props.isUserLoggedIn} />
                   <PrivateRoute path={routes.patient.home} component={PatientHome} authed={this.props.isUserLoggedIn} />
                   <PrivateRoute path={routes.patient.permissions} component={PatientPermissions} authed={this.props.isUserLoggedIn} />
                   <PrivateRoute path={routes.patient.records} component={RecordsPatientView} authed={this.props.isUserLoggedIn} />

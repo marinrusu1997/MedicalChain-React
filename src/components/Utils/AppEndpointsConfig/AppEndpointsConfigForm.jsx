@@ -71,7 +71,7 @@ export class AppEndpointsConfigForm extends React.Component {
                />
                <MDBInput
                   name='port'
-                  value={this.props.config.port}
+                  value={String(this.props.config.port)}
                   onChange={this.props.onInputChange}
                   label="Blockchain Port"
                   iconClass="teal-text"

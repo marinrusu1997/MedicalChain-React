@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import {
-   MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBDropdown,
-   MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem
+   MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse
 } from 'mdbreact'
 import SideNav from './SideNav'
 import AccountDropDown from "../../Navigation-Commons/AccountDropDown"
@@ -33,17 +32,22 @@ export class Navbar extends Component {
       return (
          <MDBNavbar className="text-center gradient-card-header aqua-gradient darken-2 white-text" dark expand="md" scrolling>
             <SideNav />
-            <MDBNavbarBrand href={routes.app} onClick={this.resetActiveLinks}>
-               <strong className="white-text">Medical Chain</strong>
+            <MDBNavbarBrand href={routes.eosmedical} onClick={this.resetActiveLinks}>
+               <strong className="white-text">
+                  <img
+                     src="https://raw.githubusercontent.com/EOSIO/eos/master/images/eos-logo.png"
+                     width="30" height="30" alt="EOS Logo" />
+                  𝓔𝓞𝓢 𝓜𝓮𝓭𝓲𝓬𝓪𝓵
+               </strong>
             </MDBNavbarBrand>
             <MDBNavbarToggler onClick={this.toggleCollapse} />
             <MDBCollapse id="navbarCollapsePatient" isOpen={this.state.isOpen} navbar>
                <MDBNavbarNav left>
                   <MDBNavItem active={this.state.activeLinks.home} onClick={this.setHomeActive}>
-                     <MDBNavLink to={routes.patient.home}>Home</MDBNavLink>
+                     <MDBNavLink to={routes.patient.home}>ʜᴏᴍᴇ</MDBNavLink>
                   </MDBNavItem>
                   <MDBNavItem active={this.state.activeLinks.permissions} onClick={this.setPermissionsActive}>
-                     <MDBNavLink to={routes.patient.permissions}>Permissions</MDBNavLink>
+                     <MDBNavLink to={routes.patient.permissions}>ᴘᴇʀᴍɪssɪᴏɴs</MDBNavLink>
                   </MDBNavItem>
                   {/* <MDBNavItem active={this.state.activeLinks.permissions}>
                      <MDBDropdown>
@@ -58,7 +62,7 @@ export class Navbar extends Component {
                   </MDBNavItem>
                   */ }
                   <MDBNavItem active={this.state.activeLinks.records} onClick={this.setRecordsActive}>
-                     <MDBNavLink to={routes.patient.records}>Records</MDBNavLink>
+                     <MDBNavLink to={routes.patient.records}>ʀᴇᴄᴏʀᴅs</MDBNavLink>
                   </MDBNavItem>
                </MDBNavbarNav>
                <MDBNavbarNav right>

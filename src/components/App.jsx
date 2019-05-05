@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { PatientMainPage } from './Patient/PatientMainPage'
 import { DoctorMainPage } from './Doctor/DoctorMainPage'
 import { Registration } from './RegistrationPage/Registration'
@@ -18,12 +19,16 @@ import {
 
 import { eosio_client } from '../blockchain/eosio-wallet-client'
 import { errorToast, succToast } from './Utils/Toasts'
+import { routes } from "../routes";
 
 class App extends React.Component {
 
   onSignInHandler = userType => {
     eosio_client.connect(
-      userName => this.props.userLoggedIn({ userName: userName, userType: userType }),
+      userName => {
+        this.props.userLoggedIn({ userName: userName, userType: userType })
+        this.props.history.push(routes.eosmedical)
+      },
       msg => errorToast(msg)
     )
   }
@@ -82,4 +87,4 @@ const mapDispatchToProps = {
   selectCurrentUserType
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

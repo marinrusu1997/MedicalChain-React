@@ -9,5 +9,6 @@ export const routes = {
       home: '/doctor/home',
       permissions: '/doctor/permissions',
       records: '/doctor/records'
-   }
+   },
+   eosmedical: '/eosmedical'
 }
