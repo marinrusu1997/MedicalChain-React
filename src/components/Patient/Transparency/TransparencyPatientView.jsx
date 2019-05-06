@@ -5,7 +5,9 @@ import { TransparencyLogic } from "./TransparencyLogic";
 export class TransparencyPatientView extends Component {
 
    async componentDidMount() {
-      console.log(await TransparencyLogic.loadAllActionsByYearAndMonth('rusumarinacc', '2018', '05'))
+      const actions = await TransparencyLogic.loadAllActionsByYearAndMonth('docvasileion', '2019', '05')
+      console.log(TransparencyLogic.filterWriteRecordActions('rusumarinacc', actions))
+      console.log(TransparencyLogic.filterReadRecordsActions('rusumarinacc', actions))
    }
 
    render() {

@@ -1,4 +1,5 @@
 import { eosio_client } from "../../../blockchain/eosio-wallet-client"
+import { store } from "../../../store/"
 
 export class TransparencyLogic {
 
@@ -41,8 +42,7 @@ export class TransparencyLogic {
 
    static async loadAllActionsByYearAndMonth(account, year, month) {
       let actions = []
-      actions.push(...(await eosio_client.actions(account, -1)).actions)
-      let matchYearAndMonth = this._testAndGetActionsWhichMatchYearMonth(actions, year, month)
+      let matchYearAndMonth = this._testAndGetActionsWhichMatchYearMonth((await eosio_client.actions(account, -1)).actions, year, month)
       actions = matchYearAndMonth.actions.concat(actions)
       let pos = 0
       while (!!!matchYearAndMonth.done) {
@@ -60,7 +60,63 @@ export class TransparencyLogic {
       return actions
    }
 
-   static async loadActions(account) {
-      console.log(await this.loadAllActions(account))
+   static getSpecialitiesNomenclatory = () => {
+      const specialties_nomenclatory = store.getState().blockchain.specialities
+      if (!!!specialties_nomenclatory) {
+         throw new Error("Specialities nomenclatory is not loaded")
+      }
+      return specialties_nomenclatory
    }
+
+   static filterWriteRecordActions = (patient, actions) => {
+      const specialties_nomenclatory = this.getSpecialitiesNomenclatory()
+      const writeActions = []
+      actions.forEach(action => {
+         if (action.action_trace.act.name === 'writerecord' && action.action_trace.act.data.perm.patient === patient) {
+            const authorizations = []
+            action.action_trace.act.authorization.forEach(authorization => {
+               authorizations.push({
+                  actor: authorization.actor,
+                  permission: authorization.permission
+               })
+            })
+            writeActions.push({
+               authorizations: authorizations,
+               hash: action.action_trace.act.data.recordinfo.hash,
+               specialty: specialties_nomenclatory.get(action.action_trace.act.data.specialtyid),
+               block_time: action.block_time,
+               block_num: action.block_num,
+               trx_id: action.action_trace.trx_id
+            })
+         }
+      })
+      return writeActions
+   }
+
+   static filterReadRecordsActions = (patient, actions) => {
+      const specialties_nomenclatory = this.getSpecialitiesNomenclatory()
+      const readActions = []
+      actions.forEach(action => {
+         if (action.action_trace.act.name === 'readrecords' && action.action_trace.act.data.perm.patient === patient) {
+            const authorizations = []
+            action.action_trace.act.authorization.forEach(authorization => {
+               authorizations.push({
+                  actor: authorization.actor,
+                  permission: authorization.permission
+               })
+            })
+            readActions.push({
+               authorizations: authorizations,
+               start_time: new Date(action.action_trace.act.data.interval.from * 1000),
+               end_time: new Date(action.action_trace.act.data.interval.to * 1000),
+               specialities: action.action_trace.act.data.specialtyids.map(id => specialties_nomenclatory.get(id)),
+               block_time: action.block_time,
+               block_num: action.block_num,
+               trx_id: action.action_trace.trx_id
+            })
+         }
+      })
+      return readActions
+   }
+
 }
