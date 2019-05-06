@@ -213,11 +213,11 @@ class EOSIOWalletClient {
 
    account_info = async account => await this.rpc.get_account(account)
 
-   actions = async account => {
-      console.log(await this.rpc.get_info())
-      console.log(await this.rpc.get_producer_schedule())
-      console.log(await this.rpc.history_get_actions(account, 0, 0))
-   }
+   bchain_state = async () => await this.rpc.get_info()
+
+   actions = async (account, pos, offset) => await this.rpc.history_get_actions(account, pos, offset)
+
+   producer_schedule = async () => await this.rpc.get_producer_schedule()
 
    _transaction = (action, data) => {
       return this.eos.transact(

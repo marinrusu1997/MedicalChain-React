@@ -3,7 +3,8 @@ export const routes = {
    patient: {
       home: '/patient/home',
       permissions: '/patient/permissions',
-      records: '/patient/records'
+      records: '/patient/records',
+      transparency: '/patient/transparency'
    },
    doctor: {
       home: '/doctor/home',

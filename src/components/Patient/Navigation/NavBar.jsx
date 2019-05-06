@@ -14,7 +14,8 @@ export class Navbar extends Component {
          activeLinks: {
             home: false,
             permissions: false,
-            records: false
+            records: false,
+            transparency: false
          }
       }
    }
@@ -23,10 +24,11 @@ export class Navbar extends Component {
       this.setState({ isOpen: !this.state.isOpen });
    }
 
-   setHomeActive = () => this.setState({ activeLinks: { home: true, permissions: false, records: false } })
-   setPermissionsActive = () => this.setState({ activeLinks: { home: false, permissions: true, records: false } })
-   setRecordsActive = () => this.setState({ activeLinks: { home: false, permissions: false, records: true } })
-   resetActiveLinks = () => this.setState({ activeLinks: { home: false, permissions: false, records: false } })
+   setHomeActive = () => this.setState({ activeLinks: { home: true, permissions: false, records: false, transparency: false } })
+   setPermissionsActive = () => this.setState({ activeLinks: { home: false, permissions: true, records: false, transparency: false } })
+   setRecordsActive = () => this.setState({ activeLinks: { home: false, permissions: false, records: true, transparency: false } })
+   setTransparencyActive = () => this.setState({ activeLinks: { home: false, permissions: false, records: false, transparency: true } })
+   resetActiveLinks = () => this.setState({ activeLinks: { home: false, permissions: false, records: false, transparency: false } })
 
    render() {
       return (
@@ -63,6 +65,9 @@ export class Navbar extends Component {
                   */ }
                   <MDBNavItem active={this.state.activeLinks.records} onClick={this.setRecordsActive}>
                      <MDBNavLink to={routes.patient.records}>ʀᴇᴄᴏʀᴅs</MDBNavLink>
+                  </MDBNavItem>
+                  <MDBNavItem active={this.state.activeLinks.transparency} onClick={this.setTransparencyActive}>
+                     <MDBNavLink to={routes.patient.transparency}>ᴛʀᴀɴsᴘᴀʀᴇɴᴄʏ</MDBNavLink>
                   </MDBNavItem>
                </MDBNavbarNav>
                <MDBNavbarNav right>

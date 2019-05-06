@@ -11,11 +11,9 @@ import {
 import AccountModal from "./AccountModal"
 import {
    USER_TYPE_PATIENT,
-   USER_TYPE_MEDIC,
-   USER_TYPE_RESEARCHER
+   USER_TYPE_MEDIC
 } from '../../store/App/actions'
 import MedicForm from "./Forms/MedicForm"
-import { ResearcherForm } from "./Forms/ResearcherForm"
 import PatientForm from "./Forms/PatientForm"
 import SignUpHeader from "./SignUpHeader"
 import BackToMainButton from './BackToMainButton'
@@ -47,8 +45,6 @@ export class Registration extends React.Component {
                               <PatientForm />}
                            {this.props.userType === USER_TYPE_MEDIC &&
                               <MedicForm onSubmit={values => console.log(values)} />}
-                           {this.props.userType === USER_TYPE_RESEARCHER &&
-                              <ResearcherForm />}
                         </MDBCol>
                      </MDBRow>
                   </MDBContainer>

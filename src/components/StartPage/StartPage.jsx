@@ -5,7 +5,7 @@ import './StartPage.css'
 import {
    USER_TYPE_PATIENT,
    USER_TYPE_MEDIC,
-   USER_TYPE_RESEARCHER
+   USER_TYPE_ADMIN
 } from '../../store/App/actions'
 import { AppEndpointsConfigSlide } from './AppEndpointsConfigSlide';
 import { UsersSlide } from './UsersSlide';
@@ -50,11 +50,10 @@ export class StartPage extends React.Component {
                   </MDBCarouselItem>
                   <MDBCarouselItem itemId="3">
                      <UsersSlide
-                        viewSrc="http://www.bavarian-nordic.com/media/182897/bn_research3_300dpi.jpg"
-                        userTypeDisplay="Researcher"
-                        userTypeDispatch={USER_TYPE_RESEARCHER}
+                        viewSrc="https://jacobbrix.dk/wp-content/uploads/2018/04/managed-wordpress-hosting-1.png"
+                        userTypeDisplay="Admin"
+                        userTypeDispatch={USER_TYPE_ADMIN}
                         onSignIn={this.onSignIn}
-                        onSignUp={this.onSignUp}
                      />
                   </MDBCarouselItem>
                   <MDBCarouselItem itemId="4">

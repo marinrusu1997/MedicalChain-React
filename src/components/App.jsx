@@ -10,7 +10,7 @@ import {
   USER_TYPE_DEFAULT,
   USER_TYPE_PATIENT,
   USER_TYPE_MEDIC,
-  USER_TYPE_RESEARCHER
+  USER_TYPE_ADMIN
 } from '../store/App/actions'
 import {
   userLoggedIn,
@@ -63,7 +63,7 @@ class App extends React.Component {
           return <PatientMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
         case USER_TYPE_MEDIC:
           return <DoctorMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
-        case USER_TYPE_RESEARCHER:
+        case USER_TYPE_ADMIN:
           return <PatientMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
         default:
           return <p> Something went wrong </p>

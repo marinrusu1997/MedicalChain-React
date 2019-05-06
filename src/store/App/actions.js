@@ -6,7 +6,7 @@ export const USER_TYPE_WAS_UNSELECTED = 'USER_TYPE_NEEDS_RESELECT'
 export const USER_TYPE_DEFAULT = ''
 export const USER_TYPE_PATIENT = 'USER_TYPE_PATIENT'
 export const USER_TYPE_MEDIC = 'USER_TYPE_MEDIC'
-export const USER_TYPE_RESEARCHER = 'USER_TYPE_RESEARCHER'
+export const USER_TYPE_ADMIN = 'USER_TYPE_ADMIN'
 
 export const userLoggedIn = user => {
   return {
@@ -23,14 +23,14 @@ export const userLoggedOut = () => {
 }
 
 export const selectCurrentUserType = userType => {
-   return {
-      type: USER_TYPE_WAS_SELECTED,
-      payload: userType
-   }
+  return {
+    type: USER_TYPE_WAS_SELECTED,
+    payload: userType
+  }
 }
 
 export const unselectCurrentUserType = () => {
-   return {
-      type: USER_TYPE_WAS_UNSELECTED
-   }
+  return {
+    type: USER_TYPE_WAS_UNSELECTED
+  }
 }

@@ -5,6 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
+    "@types/jest": "^24.0.12",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.8.16",
+    "@types/react-dom": "^16.8.4",
     "await-to-js": "^2.1.1",
     "axios": "^0.18.0",
     "bootstrap-fileinput": "^5.0.2",
@@ -36,7 +40,7 @@
     "redux-saga": "^1.0.2",
     "scatterjs-core": "^2.7.16",
     "scatterjs-plugin-eosjs2": "^1.5.0",
-    "typescript": "^3.3.3333",
+    "typescript": "^3.4.5",
     "window.ipfs-fallback": "^1.2.0"
   },
   "scripts": {
