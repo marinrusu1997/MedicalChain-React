@@ -20,6 +20,7 @@ export class EOSMedical extends React.Component {
    }
 
    componentDidMount() {
+      this._startMonitoringBchain()
       this.intervalId = setInterval(this._startMonitoringBchain.bind(this), 3000)
    }
 

@@ -22,7 +22,7 @@ export class QuerrySelectorBtn extends React.Component {
    onQuerryParamsProvidedHandler = async params => {
       try {
          const actions = await TransparencyLogic.loadAllActionsByYearAndMonth(params.doctor, params.year, params.month)
-         this.props.onActionsLoaded(TransparencyLogic.filterWriteRecordActions(actions),
+         this.props.onActionsLoaded(params, TransparencyLogic.filterWriteRecordActions(actions),
             TransparencyLogic.filterReadRecordsActions(actions))
       } catch (e) {
          errorToast(e.message)

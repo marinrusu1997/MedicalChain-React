@@ -76,16 +76,13 @@ export class TransparencyLogic {
          if (action.action_trace.act.name === 'writerecord' && action.action_trace.act.data.perm.patient === patient) {
             const authorizations = []
             action.action_trace.act.authorization.forEach(authorization => {
-               authorizations.push({
-                  actor: authorization.actor,
-                  permission: authorization.permission
-               })
+               authorizations.push(`Actor: ${authorization.actor} \n Permission: ${authorization.permission}`)
             })
             writeActions.push({
-               authorizations: authorizations,
+               authorizations: authorizations.join('\n'),
                hash: action.action_trace.act.data.recordinfo.hash,
                specialty: specialties_nomenclatory.get(action.action_trace.act.data.specialtyid),
-               block_time: action.block_time,
+               block_time: new Date(action.block_time).toString().substr(0,24),
                block_num: action.block_num,
                trx_id: action.action_trace.trx_id
             })
@@ -102,17 +99,14 @@ export class TransparencyLogic {
          if (action.action_trace.act.name === 'readrecords' && action.action_trace.act.data.perm.patient === patient) {
             const authorizations = []
             action.action_trace.act.authorization.forEach(authorization => {
-               authorizations.push({
-                  actor: authorization.actor,
-                  permission: authorization.permission
-               })
+               authorizations.push(`Actor: ${authorization.actor} \n Permission: ${authorization.permission}`)
             })
             readActions.push({
-               authorizations: authorizations,
-               start_time: new Date(action.action_trace.act.data.interval.from * 1000),
-               end_time: new Date(action.action_trace.act.data.interval.to * 1000),
-               specialities: action.action_trace.act.data.specialtyids.map(id => specialties_nomenclatory.get(id)),
-               block_time: action.block_time,
+               authorizations: authorizations.join('\n'),
+               start_time: new Date(action.action_trace.act.data.interval.from * 1000).toString().substr(0,24),
+               end_time: new Date(action.action_trace.act.data.interval.to * 1000).toString().substr(0,24),
+               specialities: action.action_trace.act.data.specialtyids.map(id => specialties_nomenclatory.get(id)).join(', '),
+               block_time: new Date(action.block_time).toString().substr(0,24),
                block_num: action.block_num,
                trx_id: action.action_trace.trx_id
             })

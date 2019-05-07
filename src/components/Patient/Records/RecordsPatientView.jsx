@@ -7,6 +7,7 @@ import { KeysRequestModal } from '../../ReadRecords-Commons/KeysRequest/KeysRequ
 import { ViewRecordLogic } from "../../ReadRecords-Commons/ViewRecord";
 import { ReadAllRecordsBtn } from './ReadAllRecords/ReadAllRecordsBtn';
 import { DoctorAccToFnameMapper } from '../../ReadRecords-Commons/DoctorAccToFNameMapper';
+import { Footer } from '../../Utils/Footer';
 
 export class RecordsPatientView extends React.Component {
 
@@ -157,6 +158,7 @@ export class RecordsPatientView extends React.Component {
                   />
                </MDBCardBody>
             </MDBCard>
+            <Footer />
          </React.Fragment>
       )
    }
