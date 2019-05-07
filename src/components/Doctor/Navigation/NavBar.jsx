@@ -33,20 +33,25 @@ export class NavBar extends React.Component {
    render() {
       return (
          <MDBNavbar className="text-center gradient-card-header aqua-gradient darken-2 white-text" dark expand="md" scrolling>
-            <MDBNavbarBrand href={routes.app} onClick={this.resetActiveLinks}>
-               <strong className="white-text">Medical Chain</strong>
+            <MDBNavbarBrand href={routes.eosmedical} onClick={this.resetActiveLinks}>
+               <strong className="white-text">
+                  <img
+                     src="https://raw.githubusercontent.com/EOSIO/eos/master/images/eos-logo.png"
+                     width="30" height="30" alt="EOS Logo" />
+                  𝓔𝓞𝓢 𝓜𝓮𝓭𝓲𝓬𝓪𝓵
+               </strong>
             </MDBNavbarBrand>
             <MDBNavbarToggler onClick={this.toggleCollapse} />
             <MDBCollapse id="navbarCollapseDoctor" isOpen={this.state.isOpen} navbar>
                <MDBNavbarNav left>
                   <MDBNavItem active={this.state.activeLinks.home} onClick={this.setHomeActive}>
-                     <MDBNavLink to={routes.doctor.home}>Home</MDBNavLink>
+                     <MDBNavLink to={routes.doctor.home}>ʜᴏᴍᴇ</MDBNavLink>
                   </MDBNavItem>
                   <MDBNavItem active={this.state.activeLinks.permissions} onClick={this.setPermissionsActive}>
-                     <MDBNavLink to={routes.doctor.permissions}>Permissions</MDBNavLink>
+                     <MDBNavLink to={routes.doctor.permissions}>ᴘᴇʀᴍɪssɪᴏɴs</MDBNavLink>
                   </MDBNavItem>
                   <MDBNavItem active={this.state.activeLinks.records} onClick={this.setRecordsActive}>
-                     <MDBNavLink to={routes.doctor.records}>Records</MDBNavLink>
+                     <MDBNavLink to={routes.doctor.records}>ʀᴇᴄᴏʀᴅs</MDBNavLink>
                   </MDBNavItem>
                </MDBNavbarNav>
                <MDBNavbarNav right>

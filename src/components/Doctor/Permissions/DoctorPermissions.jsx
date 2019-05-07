@@ -10,6 +10,7 @@ import { errorToast, succToast } from "../../Utils/Toasts";
 
 import { check_if_has_req_perms } from './CheckForPermissions/CheckForPermImpl'
 import { PatientPermissionsBtn } from './PatientPermissions/PatientPermissionsBtn';
+import { Footer } from '../../Utils/Footer';
 
 export class DoctorPermissions extends React.Component {
    constructor(props) {
@@ -91,6 +92,7 @@ export class DoctorPermissions extends React.Component {
                   />
                </MDBCardBody>
             </MDBCard>
+            <Footer />
          </React.Fragment>
       )
    }

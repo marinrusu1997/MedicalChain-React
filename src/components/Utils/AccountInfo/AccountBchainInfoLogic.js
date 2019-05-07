@@ -1,5 +1,5 @@
 import { eosio_client } from "../../../blockchain/eosio-wallet-client"
-import { errorToast } from "../../Utils/Toasts";
+import { errorToast } from "../Toasts";
 
 export class AccountBChainInfoLogic {
 

@@ -5,11 +5,10 @@ import { AccountResources } from '../../Utils/AccountInfo/AccountResources';
 import { AccountPermissions } from '../../Utils/AccountInfo/AccountPermissions';
 import { RecordsBySpecialitiesChart } from '../../Utils/AccountInfo/RecordsBySpecialitiesChart';
 import { AccountGeneral } from '../../Utils/AccountInfo/AccountGeneral';
-import { errorToast } from "../../Utils/Toasts";
 
-import { AccountSlide } from "./AccountSlide"
+import { AccountSlide } from "../../Utils/AccountInfo/AccountSlide"
 import { RecordsBySpecLogic } from './RecordsBySpecLogic';
-import { AccountBChainInfoLogic } from "./AccountBchainInfoLogic";
+import { AccountBChainInfoLogic } from "../../Utils/AccountInfo/AccountBchainInfoLogic";
 
 import './PatientHome.css'
 
