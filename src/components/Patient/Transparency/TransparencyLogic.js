@@ -68,7 +68,8 @@ export class TransparencyLogic {
       return specialties_nomenclatory
    }
 
-   static filterWriteRecordActions = (patient, actions) => {
+   static filterWriteRecordActions = actions => {
+      const patient = eosio_client.getAccountName()
       const specialties_nomenclatory = this.getSpecialitiesNomenclatory()
       const writeActions = []
       actions.forEach(action => {
@@ -93,7 +94,8 @@ export class TransparencyLogic {
       return writeActions
    }
 
-   static filterReadRecordsActions = (patient, actions) => {
+   static filterReadRecordsActions = actions => {
+      const patient = eosio_client.getAccountName()
       const specialties_nomenclatory = this.getSpecialitiesNomenclatory()
       const readActions = []
       actions.forEach(action => {
