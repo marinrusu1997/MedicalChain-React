@@ -11,5 +11,12 @@ export const routes = {
       permissions: '/doctor/permissions',
       records: '/doctor/records'
    },
-   eosmedical: '/eosmedical'
+   eosmedical: '/eosmedical',
+   admin: {
+      home: '/admin/home',
+      dashboard: '/admin/dashboard',
+      profile: '/admin/profile',
+      tables: '/admin/tables',
+      maps: '/admin/maps'
+   }
 }

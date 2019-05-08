@@ -18,6 +18,7 @@
     "eos-encrypt": "^1.0.1",
     "eosjs": "^20.0.0-beta3",
     "eosjs-ecc": "^4.0.4",
+    "google-map-react": "^1.1.4",
     "lz-string": "^1.4.4",
     "material-ui": "^0.20.2",
     "mdbreact": "^4.11.0",

@@ -20,6 +20,7 @@ import {
 import { eosio_client } from '../blockchain/eosio-wallet-client'
 import { errorToast, succToast } from './Utils/Toasts'
 import { routes } from "../routes";
+import { AdminMainPage } from './Admin/AdminMainPage';
 
 class App extends React.Component {
 
@@ -27,7 +28,9 @@ class App extends React.Component {
     eosio_client.connect(
       userName => {
         this.props.userLoggedIn({ userName: userName, userType: userType })
-        this.props.history.push(routes.eosmedical)
+        if (userType !== USER_TYPE_ADMIN) {
+          this.props.history.push(routes.eosmedical)
+        }
       },
       msg => errorToast(msg)
     )
@@ -64,7 +67,7 @@ class App extends React.Component {
         case USER_TYPE_MEDIC:
           return <DoctorMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
         case USER_TYPE_ADMIN:
-          return <PatientMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
+          return <AdminMainPage onSignOut={this.onSignOutHandler} onResync={this.onResyncHandler} />
         default:
           return <p> Something went wrong </p>
       }

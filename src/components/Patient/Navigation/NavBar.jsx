@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import {
    MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse
 } from 'mdbreact'
-import SideNav from './SideNav'
+import SideNav from '../../Utils/SideNav'
 import AccountDropDown from "../../Navigation-Commons/AccountDropDown"
 import { routes } from '../../../routes'
 
