@@ -45,9 +45,6 @@ const getErrMsgFromRpcErr = e => {
 class EOSIOWalletClient {
 
    constructor(contractAccount) {
-      this.connect = this.connect.bind(this)
-      this.disconnect = this.disconnect.bind(this)
-
       this.contractAccount = contractAccount
       this.resync_with_new_bchain_node_config()
    }

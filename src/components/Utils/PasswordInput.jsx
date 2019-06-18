@@ -21,10 +21,10 @@ export class PasswordInput extends React.Component {
    render() {
       const fieldIconCSS = {
          'float': 'right',
-         'margin-left': '-10px',
-         'margin-top': '-50px',
+         'marginLeft': '-10px',
+         'marginTop': '-50px',
          'position': 'relative',
-         'z-index': '2'
+         'zIndex': '2'
       }
       return (
          <React.Fragment>

@@ -2,7 +2,7 @@ import React from 'react'
 import { MDBCard, MDBCardHeader, MDBCardBody, MDBDataTable, MDBBtn } from "mdbreact"
 import { table_model } from "../../ReadRecords-Commons/RecordsTableModel"
 import { ReadRecordsLogic } from "./ReadRecordsLogic";
-import { errorToast } from '../../Utils/Toasts';
+import { errorToast, infoToast } from '../../Utils/Toasts';
 import { KeysRequestModal } from '../../ReadRecords-Commons/KeysRequest/KeysRequestModal';
 import { ViewRecordLogic } from "../../ReadRecords-Commons/ViewRecord";
 import { ReadAllRecordsBtn } from './ReadAllRecords/ReadAllRecordsBtn';
@@ -112,10 +112,14 @@ export class RecordsPatientView extends React.Component {
 
    _tryLoadRecordsFromBchain = async doctor_fname_flag => {
       try {
+         const rows = await this.__getViewTableRows(await ReadRecordsLogic.readRecordsMetadataFromBchainAsPatient(), doctor_fname_flag)
+         if (rows.length === 0) {
+            infoToast("You don't have any records")
+         }
          this.setState({
             table: {
                columns: table_model,
-               rows: await this.__getViewTableRows(await ReadRecordsLogic.readRecordsMetadataFromBchainAsPatient(), doctor_fname_flag)
+               rows: rows
             }
          })
       } catch (e) {

@@ -4,8 +4,7 @@ import { isPatientFormValid } from '../RegistrationPage/Forms/Validators/Patient
 import { isDoctorFormValid } from '../RegistrationPage/Forms/Validators/DoctorFormValidator'
 import {
    USER_TYPE_PATIENT,
-   USER_TYPE_MEDIC,
-   USER_TYPE_RESEARCHER
+   USER_TYPE_MEDIC
 } from '../../store/App/actions'
 import {
    accountCreationRequestSent,

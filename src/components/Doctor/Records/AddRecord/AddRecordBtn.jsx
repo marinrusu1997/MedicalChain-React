@@ -7,7 +7,7 @@ import { eosio_client } from "../../../../blockchain/eosio-wallet-client";
 import { Crypto } from "../../../../blockchain/eosio-crypto";
 import { ObjectDecorator } from "../../../../utils/ObjectDecorator";
 import { Compressor } from '../../../../utils/Compressor';
-import { storeFileToIPFS, retrieveFileFromIPFS } from "../../../../utils/IPFS";
+import { storeFileToIPFS } from "../../../../utils/IPFS";
 
 export class AddRecordBtn extends React.Component {
 

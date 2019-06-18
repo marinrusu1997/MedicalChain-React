@@ -17,6 +17,7 @@ import MedicForm from "./Forms/MedicForm"
 import PatientForm from "./Forms/PatientForm"
 import SignUpHeader from "./SignUpHeader"
 import BackToMainButton from './BackToMainButton'
+import { InstructionModal } from "./Instruction/InstructionModal";
 
 export class Registration extends React.Component {
    render() {
@@ -38,13 +39,14 @@ export class Registration extends React.Component {
                      <MDBRow>
                         <MDBCol md="4" />
                         <MDBCol md="4">
+                           <InstructionModal />
                            {this.props.userType === USER_TYPE_PATIENT &&
                               <SignUpHeader />
                            }
                            {this.props.userType === USER_TYPE_PATIENT &&
                               <PatientForm />}
                            {this.props.userType === USER_TYPE_MEDIC &&
-                              <MedicForm onSubmit={values => console.log(values)} />}
+                              <MedicForm />}
                         </MDBCol>
                      </MDBRow>
                   </MDBContainer>
