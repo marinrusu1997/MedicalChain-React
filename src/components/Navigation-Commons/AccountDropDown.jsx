@@ -17,8 +17,8 @@ class AccountDropDown extends Component {
                <MDBDropdownItem onClick={this.props.onResync}>
                   <MDBIcon icon="sync" /> Resync
                </MDBDropdownItem>
-               <MDBDropdownItem >
-                  <MDBIcon icon="file-contract" /> Authorities
+               <MDBDropdownItem onClick={this.props.onStoreKeys}>
+                  <MDBIcon icon="key" /> Store Keys
                </MDBDropdownItem>
                <MDBDropdownItem divider />
                <MDBDropdownItem onClick={this.props.onSignOut}>

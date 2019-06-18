@@ -19,7 +19,7 @@ const storeKey = async (endpoint, account, key) => {
       console.error(e)
       console.error(e.response)
    }
-   return Promise.resolve(success)
+   return success
 }
 
 const retrieveKey = async (endpoint, account) => {
@@ -39,7 +39,7 @@ const retrieveKey = async (endpoint, account) => {
       console.error(e)
       console.error(e.response)
    }
-   return Promise.resolve(key)
+   return key
 }
 
 export const storeEncryptionKey = async (account, key) => {
