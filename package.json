@@ -41,6 +41,8 @@
     "redux-form-material-ui": "^4.3.4",
     "redux-persist": "^5.10.0",
     "redux-saga": "^1.0.2",
+    "rxjs": "^6.5.2",
+    "rxjs-compat": "^6.5.2",
     "scatterjs-core": "^2.7.16",
     "scatterjs-plugin-eosjs2": "^1.5.0",
     "typescript": "^3.4.5",

@@ -21,6 +21,20 @@ export const getDoctorFullNamesFromAccs = async accounts => {
    return Promise.resolve(fullNamesMap)
 }
 
+export const getDoctorsInfoFromFullName = full_name => {
+   let promise = fetch(identification_service.baseUrl + identification_service.doctorsInfoFromFullName.api, {
+      method: identification_service.doctorsInfoFromFullName.method,
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(full_name),
+   })
+   .then(response => response.json())
+   .then(json => json.doctors)
+   
+   return promise
+}
+
 export const getPatientFullNameFromAccount = async account => {
    let fullName = null
    try {

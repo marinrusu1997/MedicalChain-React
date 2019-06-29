@@ -14,6 +14,10 @@ export const identification_service = {
       method: 'post',
       api: '/doctor/full-names'
    },
+   doctorsInfoFromFullName: {
+      method: 'post',
+      api: '/doctor/info-from-full-name'
+   },
    patientFullNameFromAcc: {
       method: 'post',
       api: '/patient/full-name'

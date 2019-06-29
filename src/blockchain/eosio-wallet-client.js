@@ -1,4 +1,5 @@
-import { Api, JsonRpc, RpcError } from "eosjs"
+import { Api, JsonRpc, RpcError, Serialize } from "eosjs"
+import { TextDecoder, TextEncoder } from 'util'
 import ScatterJS from "scatterjs-core"
 import ScatterEOS from "scatterjs-plugin-eosjs2"
 import { Crypto } from "./eosio-crypto";
@@ -425,6 +426,90 @@ class EOSIOWalletClient {
             const tr_receipt = await this._transaction(medicalContract.actions.recordstab, {
                patient: this.account.name
             })
+            status.isSuccess = true
+            status.tr_receipt = tr_receipt
+         }
+      } catch (e) {
+         console.error(e)
+         if (e instanceof RpcError) {
+            status.msg = getErrMsgFromRpcErr(e)
+         } else if (e.message) {
+            status.msg = e.message
+         } else {
+            status.msg = 'Failed to push transaction'
+         }
+      }
+      return status
+   }
+
+   deploy_contract = async filesContent => {
+      const status = {
+         isSuccess: false
+      }
+      try {
+         if (!!!this.account) {
+            status.msg = 'Failed to push transaction : Not connected to wallet'
+         } else {
+            /* Prepare wasm */
+            const wasm = new Buffer(filesContent.wasm).toString('hex')
+            /* Prepare abi */
+            const buffer = new Serialize.SerialBuffer()
+            let abi = JSON.parse(new Buffer(filesContent.abi).toString('utf8'))
+            const abiDefinition = new Api({ rpc: this.rpc }).abiTypes.get('abi_def')
+            abi = abiDefinition.fields.reduce(
+               (acc, { name: fieldName }) =>
+                  Object.assign(acc, { [fieldName]: acc[fieldName] || [] }),
+               abi
+            )
+            abiDefinition.serialize(buffer, abi)
+            abi = Buffer.from(buffer.asUint8Array()).toString(`hex`)
+
+            //console.log(`wasm ${wasm.length} abi ${abi.length}`)
+
+            /* Push transaction */
+            const tr_receipt = await this.eos.transact(
+               {
+                  actions: [
+                     /*
+                     {
+                        account: 'eosio',
+                        name: 'setcode',
+                        authorization: [
+                           {
+                              actor: this.account.name,
+                              permission: this.account.authority
+                           }
+                        ],
+                        data: {
+                           account: this.account.name,
+                           vmtype: 0,
+                           vmversion: 0,
+                           code: wasm
+                        },
+                     },
+                     */
+                     {
+                        account: 'eosio',
+                        name: 'setabi',
+                        authorization: [
+                           {
+                              actor: this.account.name,
+                              permission: this.account.authority
+                           }
+                        ],
+                        data: {
+                           account: this.account.name,
+                           abi: abi,
+                        },
+                     }
+
+                  ],
+               },
+               {
+                  blocksBehind: 3,
+                  expireSeconds: 30,
+               }
+            )
             status.isSuccess = true
             status.tr_receipt = tr_receipt
          }

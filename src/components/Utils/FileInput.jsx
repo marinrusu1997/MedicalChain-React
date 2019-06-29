@@ -6,11 +6,13 @@ export class FileInput extends React.Component {
    constructor(props) {
       super(props)
       this.state = {
-         label: this._getDefaultLabelName()
+         label: this._getLabelName()
       }
    }
 
-   _getDefaultLabelName = () => <font color="grey">Choose medical record ...</font>
+   _getLabelName = () => this.props.label ? <font color="grey">{this.props.label}</font> : <font color="grey">Choose medical record ...</font>
+
+   _getInvalidFeedbackMsg = () => this.props.invalid_feedback ? this.props.invalid_feedback : "Please select the patient medical record"
 
    onFileSelected = event => {
       if (event.target.files.length === 1) {
@@ -19,7 +21,7 @@ export class FileInput extends React.Component {
          this.setState({ label: fileDetails.name })
       } else {
          this.props.onFileSelected(null)
-         this.setState({ label: this._getDefaultLabelName() })
+         this.setState({ label: this._getLabelName() })
       }
    }
 
@@ -41,10 +43,16 @@ export class FileInput extends React.Component {
                   {this.state.label}
                </label>
                <div className="invalid-feedback">
-                  Please select the patient medical record
+                  {this._getInvalidFeedbackMsg()}
                </div>
             </div>
-            <p style={paragraphStyle}><MDBIcon className={this.props.icon.className} icon={this.props.icon.type} size="2x" /></p>
+            <p style={paragraphStyle}>
+               <MDBIcon
+                  className={this.props.icon.className}
+                  icon={this.props.icon.type}
+                  size="2x"
+               />
+            </p>
          </React.Fragment>
       )
    }

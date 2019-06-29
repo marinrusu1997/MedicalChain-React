@@ -14,6 +14,7 @@ import { ConfirmationModal } from '../../Utils/ConfirmationModal'
 import { table_mapping } from "./PatientPermissionsTableModel";
 import { RequestPatientPermsLogic } from "../../Permission-Commons/RequestPatientPermsLogic";
 import { Footer } from '../../Utils/Footer';
+import { ViewDoctorDetailsBtn } from './DoctorsDetails/ViewDoctorDetailsBtn';
 
 const messageWhenNoSelections = "You don't have any selected permissions. Please select at least one by toggling the button from the Change column"
 const messageWhenTooManySelections = 'Due to the long delay of signing transaction with scatter wallet, we recommend you to select only 1 permission for further changes.' +
@@ -512,6 +513,7 @@ class _PatientPermissions extends React.Component {
                   </div>
                   <a href="#!" className="white-text mx-3"><i>Permissions Management</i></a>
                   <div>
+                     <ViewDoctorDetailsBtn />
                      <MDBBtn outline rounded size="sm" color="white" className="px-2 btn-circle" onClick={this.addPermHandler}>
                         <i className="fa fa-plus-circle mt-0"></i>
                      </MDBBtn>
